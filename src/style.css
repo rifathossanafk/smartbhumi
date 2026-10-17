@@ -1,0 +1,145 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --primary: #1a6b3c;
+    --primary-dark: #14532d;
+    --primary-light: #22c55e;
+    --brand-forest: #0d3b1e;
+    --brand-green: #166534;
+    --brand-gold: #b45309;
+    --brand-accent: #4ade80;
+    --brand-navy: #0f172a;
+  }
+
+  body {
+    font-family: 'Hind Siliguri', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    color: #0f172a;
+    background-color: #f0fdf4;
+    overflow-x: hidden;
+  }
+}
+
+/* Custom leaflet map adjustments */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 1rem;
+  z-index: 10;
+  font-family: inherit;
+}
+
+/* Smooth transitions */
+.transition-all-fast {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Glassmorphism accents */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.glass-dark {
+  background: rgba(13, 59, 30, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* High-tech glow and borders */
+.border-glow-green {
+  box-shadow: 0 0 20px -3px rgba(22, 101, 52, 0.35);
+}
+
+.border-glow-gold {
+  box-shadow: 0 0 20px -3px rgba(180, 83, 9, 0.25);
+}
+
+/* Land Map Geometry SVG background */
+.land-map-bg {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cdefs%3E%3Cstyle%3E.c%7Bfill:none;stroke:%234ade80;stroke-opacity:0.12;stroke-width:0.8%7D%3C/style%3E%3C/defs%3E%3Cpolygon class='c' points='20,10 60,5 90,25 75,55 35,60 10,40'/%3E%3Cpolygon class='c' points='90,25 130,15 155,40 145,70 110,75 75,55'/%3E%3Cpolygon class='c' points='155,40 185,30 195,65 175,85 145,70'/%3E%3Cpolygon class='c' points='35,60 75,55 90,90 70,115 30,110 15,80'/%3E%3Cpolygon class='c' points='75,55 110,75 120,105 90,90'/%3E%3Cpolygon class='c' points='110,75 145,70 165,95 150,120 120,105'/%3E%3Cpolygon class='c' points='175,85 195,65 195,100 178,115 165,95'/%3E%3Cpolygon class='c' points='15,80 30,110 25,145 5,130'/%3E%3Cpolygon class='c' points='30,110 70,115 80,145 50,160 25,145'/%3E%3Cpolygon class='c' points='70,115 90,90 120,105 115,135 80,145'/%3E%3Cpolygon class='c' points='120,105 150,120 155,155 115,135'/%3E%3Cpolygon class='c' points='150,120 165,95 178,115 180,155 155,155'/%3E%3Cpolygon class='c' points='25,145 50,160 45,185 15,175'/%3E%3Cpolygon class='c' points='50,160 80,145 95,170 60,190 45,185'/%3E%3Cpolygon class='c' points='80,145 115,135 125,165 95,170'/%3E%3Cpolygon class='c' points='115,135 155,155 150,185 125,165'/%3E%3Cpolygon class='c' points='155,155 180,155 185,185 150,185'/%3E%3Cline class='c' x1='60' y1='5' x2='60' y2='195'/%3E%3Cline class='c' x1='120' y1='5' x2='120' y2='195'/%3E%3Cline class='c' x1='180' y1='5' x2='180' y2='195'/%3E%3Cline class='c' x1='5' y1='60' x2='195' y2='60'/%3E%3Cline class='c' x1='5' y1='120' x2='195' y2='120'/%3E%3Cline class='c' x1='5' y1='180' x2='195' y2='180'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* Cadastral Polygon pulse */
+@keyframes plot-pulse {
+  0%, 100% {
+    stroke-opacity: 0.9;
+    stroke-width: 3.5px;
+  }
+  50% {
+    stroke-opacity: 0.4;
+    stroke-width: 5px;
+  }
+}
+
+.selected-cadastral-polygon {
+  animation: plot-pulse 2s infinite ease-in-out;
+}
+
+/* Pulse animation */
+@keyframes subtle-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.015); }
+}
+
+.animate-subtle {
+  animation: subtle-pulse 3s infinite ease-in-out;
+}
+
+/* Fade in animation */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out both;
+}
+
+/* Slide up animation */
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.5s ease-out both;
+}
+
+/* Float animation for decorative elements */
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-float {
+  animation: float-gentle 4s ease-in-out infinite;
+}
+
+/* Glow pulse for active status */
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(74, 222, 128, 0.3); }
+  50% { box-shadow: 0 0 18px rgba(74, 222, 128, 0.6); }
+}
+
+.animate-glow {
+  animation: glow-pulse 2.5s ease-in-out infinite;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f0fdf4;
+}
+::-webkit-scrollbar-thumb {
+  background: #86efac;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #4ade80;
+}
