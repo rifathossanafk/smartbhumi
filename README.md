@@ -12,6 +12,33 @@
 
 The project aims to make land-document verification easier to understand for citizens while providing a useful demonstration workflow for professional users, registry officials, and financial evaluators.
 
+🌐 Live Demo
+
+<p align="center">
+  <a href="https://smartbhumi.vercel.app/">
+    <img src="https://img.shields.io/badge/🚀_Launch-SmartBhumi-006A4E?style=for-the-badge" alt="Launch SmartBhumi"/>
+  </a>
+</p>
+
+Live Website: https://smartbhumi.vercel.app/
+
+🎥 Project Demonstration
+
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=vg9ztqZPWQM">
+    <img src="https://img.youtube.com/vi/vg9ztqZPWQM/maxresdefault.jpg"
+         alt="Watch the LandProof project demonstration"
+         width="800"/>
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://youtu.be/vg9ztqZPWQM">
+    ▶️ <strong>Watch the Full Demo on YouTube</strong>
+  </a>
+</p>
+
+
 > [!IMPORTANT]
 > **Important Prototype Disclaimer**: LandProof is a hackathon prototype, not an official Bangladesh government service. It uses synthetic demonstration records and does not establish legal ownership or provide authoritative verification of real land records.
 
