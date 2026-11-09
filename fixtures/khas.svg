@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <rect width="800" height="600" fill="#fdfbf7" stroke="#ca8a04" stroke-width="4"/>
+  <rect x="20" y="20" width="760" height="560" fill="none" stroke="#eab308" stroke-width="2"/>
+  <text x="400" y="70" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#854d0e">গণপ্রজাতন্ত্রী বাংলাদেশ সরকার - খাস জমি হস্তান্তর দলিল [অবৈধ প্রয়াস]</text>
+  <text x="400" y="105" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#374151">সাব-রেজিস্ট্রার কার্যালয়, হাটহাজারী, চট্টগ্রাম | খাস জমি সিমুলেশন</text>
+  <line x1="50" y1="125" x2="750" y2="125" stroke="#cbd5e1" stroke-width="2"/>
+  
+  <text x="60" y="170" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#111827">দলিল নম্বর (Deed No):</text>
+  <text x="320" y="170" font-family="Courier, monospace" font-size="18" fill="#1e40af">LP-2026-003</text>
+  
+  <text x="60" y="215" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#111827">খতিয়ান নম্বর (Khatian):</text>
+  <text x="320" y="215" font-family="Courier, monospace" font-size="18" fill="#a16207">KH-2026-0003 (১নং খাস খতিয়ান)</text>
+  
+  <text x="60" y="260" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#111827">দাগ নম্বর (Dag No):</text>
+  <text x="320" y="260" font-family="Courier, monospace" font-size="18" fill="#111827">DAG-2026-003</text>
+  
+  <text x="60" y="305" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#111827">মৌজা (Mouza):</text>
+  <text x="320" y="305" font-family="Arial, sans-serif" font-size="18" fill="#111827">ফতেপুর (জেএল ৪০১)</text>
+  
+  <text x="60" y="350" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#111827">জমির পরিমাণ (Area):</text>
+  <text x="320" y="350" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#111827">২২.০০ শতক (22.00 Shotok)</text>
+  
+  <text x="60" y="395" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#111827">মালিক/দাতা (Seller):</text>
+  <text x="320" y="395" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#854d0e">গণপ্রজাতন্ত্রী বাংলাদেশ সরকার (খাস জমি)</text>
+  
+  <text x="60" y="440" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#111827">অবৈধ গ্রহীতা (Claimant):</text>
+  <text x="320" y="440" font-family="Arial, sans-serif" font-size="18" fill="#111827">কামাল উদ্দিন</text>
+
+  <rect x="50" y="520" width="700" height="50" fill="#fefce8" stroke="#ca8a04" rx="4"/>
+  <text x="400" y="550" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#854d0e">সতর্কবার্তা: খাস জমি ব্যক্তিগত হস্তান্তর বা বিক্রির যেকোনো দলিল স্বয়ংক্রিয়ভাবে বাতিল</text>
+</svg>
+
