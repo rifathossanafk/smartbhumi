@@ -601,13 +601,25 @@ app.get('*', (c) => {
     };
     const contentType = mimeMap[ext] || 'application/octet-stream';
     const content = fs.readFileSync(filePath);
-    return c.body(content, 200, { 'Content-Type': contentType });
+    const headers: Record<string, string> = { 'Content-Type': contentType };
+    if (ext === '.html' || reqPath === '/sw.js') {
+      headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
+    }
+    return c.body(content, 200, headers);
+  }
+
+  // Never return index.html for missing static assets — return clean 404
+  if (reqPath.startsWith('/assets/')) {
+    return c.text('Asset Not Found', 404);
   }
 
   // Fallback to index.html for SPA routing
   const indexHtml = path.join(DIST_DIR, 'index.html');
   if (fs.existsSync(indexHtml)) {
-    return c.body(fs.readFileSync(indexHtml), 200, { 'Content-Type': 'text/html' });
+    return c.body(fs.readFileSync(indexHtml), 200, {
+      'Content-Type': 'text/html',
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+    });
   }
 
   return c.text('SmartBhumi Core Server Active (Run `npm run build` to serve frontend SPA)');

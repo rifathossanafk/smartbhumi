@@ -160,8 +160,11 @@ export const LandingPage: React.FC = () => {
   const isBn = i18n.language === 'bn';
   const [activeType, setActiveType] = useState(0);
 
-  const verifiedCount = useCounter(verificationEvents.filter(e => e.outcome === 'verified' || e.outcome === 'success').length);
-  const recordCount = useCounter(landRecords.length);
+  const safeEvents = Array.isArray(verificationEvents) ? verificationEvents : [];
+  const safeRecords = Array.isArray(landRecords) ? landRecords : [];
+
+  const verifiedCount = useCounter(safeEvents.filter(e => e && (e.outcome === 'verified' || e.outcome === 'success')).length);
+  const recordCount = useCounter(safeRecords.length);
 
   return (
     <div className="space-y-0 pb-0">

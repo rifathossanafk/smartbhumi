@@ -4,10 +4,12 @@ import './style.css';
 import './i18n';
 import App from './App';
 
-// Register Service Worker for offline PWA capabilities
+// Service Worker for offline PWA capabilities
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch((err) => {
+    navigator.serviceWorker.register('/sw.js').then((reg) => {
+      reg.update();
+    }).catch((err) => {
       console.warn('PWA ServiceWorker registration failed:', err);
     });
   });

@@ -1,23 +1,11 @@
 /**
- * SmartBhumi Service Worker
- * Caches core app shell for offline local PWA execution.
+ * SmartBhumi Service Worker v2
+ * Network-first for fresh bundles, falls back to cache when offline.
  */
 
-const CACHE_NAME = 'smartbhumi-shell-v1';
-const SHELL_ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.webmanifest',
-  '/logo.png',
-  '/favicon.svg'
-];
+const CACHE_NAME = 'smartbhumi-shell-v2';
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(SHELL_ASSETS);
-    })
-  );
   self.skipWaiting();
 });
 
@@ -25,7 +13,7 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
-        keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k))
+        keys.map((k) => caches.delete(k))
       );
     })
   );
@@ -38,14 +26,24 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Navigation requests: ALWAYS network-first so new bundles are never stale
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request).catch(() => caches.match('/index.html'))
+    );
+    return;
+  }
+
+  // Asset requests: network-first, fallback to cache
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      return cached || fetch(event.request).catch(() => {
-        if (event.request.mode === 'navigate') {
-          return caches.match('/index.html');
+    fetch(event.request)
+      .then((response) => {
+        if (response.status === 200) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
         }
-      });
-    })
+        return response;
+      })
+      .catch(() => caches.match(event.request))
   );
 });
-

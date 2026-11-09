@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Component, type ErrorInfo, type ReactNode } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useStore } from './store/useStore';
 import { Navbar } from './components/Navbar';
@@ -25,66 +25,132 @@ import { RecordDetailsPage } from './pages/RecordDetailsPage';
 import { FlaggedReviewPage } from './pages/FlaggedReviewPage';
 import { HistoryPage } from './pages/HistoryPage';
 
+interface ErrorBoundaryProps {
+  children: ReactNode;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+}
+
+class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error('SmartBhumi ErrorBoundary caught:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-[#f0fdf4] p-4 font-sans text-slate-900">
+          <div className="bg-white rounded-2xl shadow-xl border border-emerald-200 p-8 max-w-lg text-center space-y-4">
+            <div className="w-12 h-12 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center mx-auto text-xl font-bold">
+              ⚠️
+            </div>
+            <h2 className="text-xl font-bold text-slate-900">স্মার্ট ভূমি সেবা পোর্টাল</h2>
+            <p className="text-sm text-slate-600">
+              ব্রাউজার ক্যাশ রিসেট করে পোর্টাল পুনরায় চালু করুন:
+            </p>
+            <div className="text-xs font-mono bg-slate-50 p-2 rounded border border-slate-200 text-slate-700 text-left overflow-x-auto">
+              {this.state.error?.message || 'Application State Hydration Exception'}
+            </div>
+            <button
+              onClick={() => {
+                localStorage.removeItem('landproof-store');
+                if ('serviceWorker' in navigator) {
+                  navigator.serviceWorker.getRegistrations().then(regs => {
+                    for (const reg of regs) reg.unregister();
+                  });
+                }
+                window.location.reload();
+              }}
+              className="px-5 py-2.5 bg-emerald-700 text-white rounded-xl text-xs font-semibold hover:bg-emerald-800 transition cursor-pointer shadow-sm"
+            >
+              ক্যাশ সম্পূর্ণ পরিষ্কার করে রিলোড করুন (Clear Cache & Reload)
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export const App: React.FC = () => {
   const { initializeIfNeeded } = useStore();
 
   useEffect(() => {
-    initializeIfNeeded();
+    try {
+      initializeIfNeeded();
+    } catch (err) {
+      console.warn('Initialization caught:', err);
+    }
   }, [initializeIfNeeded]);
 
   return (
-    <BrowserRouter>
-      <div className="min-h-screen flex flex-col bg-[#f0fdf4] text-slate-900 font-sans antialiased selection:bg-emerald-600 selection:text-white">
-        {/* Official Top Ribbon + Main Navigation */}
-        <Navbar />
+    <ErrorBoundary>
+      <BrowserRouter>
+        <div className="min-h-screen flex flex-col bg-[#f0fdf4] text-slate-900 font-sans antialiased selection:bg-emerald-600 selection:text-white">
+          {/* Official Top Ribbon + Main Navigation */}
+          <Navbar />
 
-        {/* Main Application Routes */}
-        <main className="flex-1 w-full">
-          <Routes>
-            {/* 1. Official National Landing Portal */}
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/login" element={<LoginPage />} />
+          {/* Main Application Routes */}
+          <main className="flex-1 w-full">
+            <Routes>
+              {/* 1. Official National Landing Portal */}
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/login" element={<LoginPage />} />
 
-            {/* 2. Hackathon Core Modules (P2, P3, P4) */}
-            {/* P2: Cryptographic Deed Verification & Tamper Simulation */}
-            <Route path="/verify" element={<VerifyPage />} />
-            <Route path="/verify/:deedNumber" element={<VerifyPage />} />
+              {/* 2. Hackathon Core Modules (P2, P3, P4) */}
+              {/* P2: Cryptographic Deed Verification & Tamper Simulation */}
+              <Route path="/verify" element={<VerifyPage />} />
+              <Route path="/verify/:deedNumber" element={<VerifyPage />} />
 
-            {/* P3: Deed Registration & Area Accounting Double-Sale Prevention */}
-            <Route path="/register" element={<RegisterPage />} />
+              {/* P3: Deed Registration & Area Accounting Double-Sale Prevention */}
+              <Route path="/register" element={<RegisterPage />} />
 
-            {/* P4: e-Mutation Pipeline & AC Land Queue */}
-            <Route path="/mutation" element={<MutationPage />} />
+              {/* P4: e-Mutation Pipeline & AC Land Queue */}
+              <Route path="/mutation" element={<MutationPage />} />
 
-            {/* Auditability: RFC 9162 Merkle Log, PQC Signatures, & Red-Team Lab */}
-            <Route path="/ledger" element={<LedgerPage />} />
+              {/* Auditability: RFC 9162 Merkle Log, PQC Signatures, & Red-Team Lab */}
+              <Route path="/ledger" element={<LedgerPage />} />
 
-            {/* Cadastral Survey Graph, Faraiz Inheritance, & OCR Token Diff */}
-            <Route path="/lineage" element={<LineagePage />} />
+              {/* Cadastral Survey Graph, Faraiz Inheritance, & OCR Token Diff */}
+              <Route path="/lineage" element={<LineagePage />} />
 
-            {/* Printable A4 Deeds Kit for Judges */}
-            <Route path="/print-deeds" element={<PrintDeedsPage />} />
+              {/* Printable A4 Deeds Kit for Judges */}
+              <Route path="/print-deeds" element={<PrintDeedsPage />} />
 
-            {/* 3. Civic Search, Cadastral Maps, & Dashboards */}
-            <Route path="/search" element={<SearchPage />} />
-            <Route path="/map" element={<MapPage />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/record/:id" element={<RecordDetailsPage />} />
-            <Route path="/flagged" element={<FlaggedReviewPage />} />
-            <Route path="/history" element={<HistoryPage />} />
+              {/* 3. Civic Search, Cadastral Maps, & Dashboards */}
+              <Route path="/search" element={<SearchPage />} />
+              <Route path="/map" element={<MapPage />} />
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/record/:id" element={<RecordDetailsPage />} />
+              <Route path="/flagged" element={<FlaggedReviewPage />} />
+              <Route path="/history" element={<HistoryPage />} />
 
-            {/* Fallback to Home */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </main>
+              {/* Fallback to Home */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </main>
 
-        {/* Official Government Footer */}
-        <Footer />
+          {/* Official Government Footer */}
+          <Footer />
 
-        {/* Floating Judge 3-Minute Presentation Launcher & Fast DB Reset */}
-        <JudgeDemoBar />
-      </div>
-    </BrowserRouter>
+          {/* Floating Judge 3-Minute Presentation Launcher & Fast DB Reset */}
+          <JudgeDemoBar />
+        </div>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 };
 
