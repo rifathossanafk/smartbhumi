@@ -70,7 +70,7 @@ export const JudgeDemoBar: React.FC = () => {
             </button>
 
             <button
-              onClick={() => jumpToAct(2, '/')}
+              onClick={() => jumpToAct(2, '/verify')}
               className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-emerald-950 text-left border border-slate-700 hover:border-emerald-600 transition-colors"
             >
               <div className="flex items-center gap-2">

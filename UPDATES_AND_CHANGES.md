@@ -23,6 +23,11 @@
 
 ## 2. Changes, Newest First
 
+### UI Restoration & Navigation Integration: Government Portal Theme & Hackathon Superpowers
+- **What changed:** Restored the rich, high-fidelity Bangladesh Government portal aesthetic (`bg-[#f0fdf4]`) with the animated statistics, Cadastral preview, and interactive services grid on `LandingPage.tsx`. Integrated the official top national ribbon (`#0b2915`) into `Navbar.tsx` featuring the People's Republic of Bangladesh Ministry of Land identity, helpline 16122, language switcher, subtle synthetic data tag, live Airplane Mode simulation toggle, and 1-click Demo Role switcher (`Citizen`, `Sub-Registrar`, `AC Land`, `Admin`). Linked all Track A/B hackathon innovations directly into the navigation: Verify (`/verify`), Register & Sell (`/register`), e-Mutation (`/mutation`), Merkle Ledger & PQC (`/ledger`), Cadastral Lineage & Faraiz (`/lineage`), and Judge Print Kit (`/print-deeds`). Restored `Footer.tsx` and positioned `JudgeDemoBar` as a floating corner drawer.
+- **Files added or changed:** `src/App.tsx`, `src/components/Navbar.tsx`, `src/components/JudgeDemoBar.tsx`, `src/pages/LandingPage.tsx`, `src/pages/LoginPage.tsx`, `src/i18n/bn.ts`, `src/i18n/en.ts`.
+- **How to check:** Open `http://localhost:3000/`. Confirm the landing page renders with animated counters and green map geometry; test navigation to `/verify`, `/register`, `/mutation`, `/ledger`, `/lineage`, `/print-deeds`; test the live Airplane mode button and role switcher in the navbar.
+
 ### Stage B7: Judge Demo Kit, Printable A4 Deeds, & Pitch Deck Outline
 - **What changed:** Built the Judge Demo Bar with 1-click jump shortcuts for the 3 pitch acts and a sub-30ms instant database reset. Created `/print-deeds` featuring two full A4 Bangla deeds (Genuine 15.00 shotok and Tampered 25.00 shotok with authentic high-contrast QR code) optimized for live mobile camera scanning and print stylesheets (`@media print`). Authored `docs/DECK_OUTLINE.md` detailing the 10-slide championship pitch deck.
 - **Files added or changed:** `src/pages/PrintDeedsPage.tsx`, `src/components/JudgeDemoBar.tsx`, `docs/DECK_OUTLINE.md`, `README.md`.

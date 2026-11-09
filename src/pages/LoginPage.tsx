@@ -29,7 +29,7 @@ export const LoginPage: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState<'citizen' | 'officer'>('citizen');
   const [selectedRole, setSelectedRole] = useState<UserRole>('citizen');
-  const [identifier, setIdentifier] = useState('19852694123456789');
+  const [identifier, setIdentifier] = useState('99900012345678901');
   const [password, setPassword] = useState('••••••••••••');
   const [justAutoFilled, setJustAutoFilled] = useState(false);
 
