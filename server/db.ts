@@ -455,6 +455,12 @@ export function seedDatabase(db: DatabaseSync): void {
   }
 }
 
+let _logAppender: ((id: string) => any) | null = null;
+
+export function setLogAppender(fn: (id: string) => any) {
+  _logAppender = fn;
+}
+
 /**
  * Reset database state to pristine seed data in < 100ms.
  */
@@ -476,12 +482,12 @@ export function resetDatabaseFast(): number {
 
   const db = getDb();
   seedDatabase(db);
-  try {
-    // Dynamic import logManager to seal initial deed without circular dependency
-    const { appendDeedToLog } = require('./logManager.js');
-    appendDeedToLog('rec-001');
-  } catch {
-    // ignore if logManager not yet compiled
+  if (_logAppender) {
+    try {
+      _logAppender('rec-001');
+    } catch {
+      // ignore if keys not initialized yet
+    }
   }
   return Math.round(performance.now() - start);
 }

@@ -9,7 +9,7 @@
  * - QR payload generation under 700 bytes
  */
 
-import { getDb } from './db.js';
+import { getDb, setLogAppender } from './db.js';
 import { canonicalize } from '../src/shared/canonicalize.js';
 import {
   leafHashFromString,
@@ -241,4 +241,8 @@ export function generateDeedQRPayload(deedIdOrNumber: string): {
     byteLength,
   };
 }
+
+// Register auto-sealer for pristine DB resets
+setLogAppender(appendDeedToLog);
+
 
