@@ -14,11 +14,9 @@
 
 ---
 
-## 1. System Overview & The Championship Leap
+## 1. System Overview & Architecture
 
-In Round 1, our prototype placed **26th**. The initial version operated exclusively inside browser `localStorage`, relied on fragile raw byte hashes (which failed whenever a deed was rescanned or re-saved as a PDF), lacked transactional double-sale prevention, and provided no bridge between the Sub-Registrar and e-Mutation.
-
-For the **Final Round**, SmartBhumi underwent a complete architectural rebuild to solve the core triad of land administration challenges:
+Between Round 1 and the Final Round, SmartBhumi underwent a complete architectural rebuild to solve the core triad of land administration challenges:
 - **Problem P2 (Deed & Ownership Verification):** Solved via **RFC 9162 Merkle transparency logs**, canonical JSON field normalization (rescan-tolerant), and a compact **549-byte offline-verifiable QR code** running on any smartphone with zero cellular connectivity.
 - **Problem P3 (Double-Sale & Over-Allocation Prevention):** Solved via **server-enforced 64-bit integer micro-shotok accounting** (`1 shotok = 1,000,000 micro-shotok`) inside atomic SQLite `BEGIN IMMEDIATE` transactions with database-level `CHECK(available >= 0)` constraints.
 - **Problem P4 (Registry to e-Mutation Pipeline):** Solved via an automated sealing bridge that locks transacted area under `mutation_pending`, surfaces cases to the **Assistant Commissioner (Land)** queue, and enables 2-click atomic approval with automatic Khatian generation.
@@ -56,7 +54,7 @@ flowchart TD
 
 ## 2. Changes Since Round 1 (Summary Table)
 
-| Feature / Vector | Round 1 (26th Place) | Final Round (SmartBhumi) | Impact on Competition |
+| Feature / Vector | Round 1 Baseline | Final Round (SmartBhumi) | Architectural Benefit |
 | :--- | :--- | :--- | :--- |
 | **Backend Architecture** | None (Zustand / browser `localStorage`) | Node 20+ Hono server with SQLite WAL mode | Server-authoritative data integrity; fast <30ms reset |
 | **Area Accounting** | Floating-point numbers in UI state | 64-bit Integer Micro-Shotok (`1 shotok = 1,000,000`) | Eliminates floating-point rounding errors and phantom land |
@@ -134,9 +132,9 @@ Land ownership records in Bangladesh endure for decades. Classical signatures (R
    - The system is **fail-closed**: if the classical signature passes but the ML-DSA-65 signature fails, the STH is rejected with status `BLOCKED`.
    - The QR code remains ultra-compact (**549 bytes**, under the 700-byte printable budget) by embedding the compact 64-byte Ed25519 signature and Merkle inclusion path, while referencing the dual-signed STH epoch.
 2. **What It Does NOT Claim:**
-   - We do *not* claim "quantum-proof" or "unhackable" magic.
-   - We do *not* claim that physical documents cannot be lost or damaged.
-   - We do *not* claim that offline QR verification proves the private keys were never physically stolen from the Sub-Registrar's hardware.
+   - We make no claims of absolute invulnerability or impossible cryptographic perfection.
+   - We do not claim that physical documents cannot be lost or damaged.
+   - We do not claim that offline QR verification proves the private keys were never physically stolen from the Sub-Registrar's hardware.
 
 ---
 
@@ -189,22 +187,24 @@ Click the amber **"রিসেট (<১০০ms)"** button in the Judge Demo Ba
 ## 7. Open-Source Credits & AI Tools Declaration
 
 ### AI Tools Attribution
-- **Google Antigravity:** Used for full-stack autonomous architecture, applied cryptography implementation, API development, stress-test scripting, and frontend redesign.
+- **Google Antigravity:** Code generation, with the Claude and Gemini models selected in it.
+- **Claude, Gemini and Manus:** Research, planning, and prompt writing.
 
-### Open-Source Libraries
-- **Hono** (`hono@4.7.7`): Ultra-fast web framework running on Node.js.
-- **@noble/curves** (`1.8.1`): Audited, zero-dependency Ed25519 implementation by Paul Miller.
-- **@noble/hashes** (`1.7.1`): Audited SHA-256 and HMAC implementation.
-- **@noble/post-quantum** (`0.2.1`): Implementation of NIST FIPS 204 ML-DSA-65.
-- **jsqr** (`1.4.0`): Pure JavaScript QR code reader running in web workers and UI thread.
-- **qrcode.react** (`4.2.0`): SVG/Canvas high-contrast QR generation.
-- **React 19 & Tailwind CSS 4**: Declarative UI and atomic styling.
-- **Vitest** (`5.1.0`): Modern unit testing runner.
+### Open-Source Libraries & Licenses
+- **Hono** (`hono@4.7.7`, MIT License): High-performance web framework running on Node.js.
+- **@noble/curves** (`1.8.1`, MIT License): Audited, zero-dependency Ed25519 implementation by Paul Miller.
+- **@noble/hashes** (`1.7.1`, MIT License): Audited SHA-256 and HMAC implementation.
+- **@noble/post-quantum** (`0.2.1`, MIT License): Audited implementation of NIST FIPS 204 ML-DSA-65.
+- **jsqr** (`1.4.0`, Apache-2.0 License): Pure JavaScript QR code reader running in web workers and UI thread.
+- **qrcode.react** (`4.2.0`, ISC License): SVG and Canvas high-contrast QR code rendering.
+- **React 19** (`19.3.1`, MIT License) & **Tailwind CSS 4** (`4.3.3`, MIT License): Declarative user interface and responsive utility styling.
+- **Vitest** (`5.1.0`, MIT License): Fast automated unit and concurrency test runner.
+- **Lucide React** (`1.58.0`, ISC License): Clean, accessible icon system.
 
 ---
 
 ## 8. Documentation Index
-- **Championship Pitch Deck Outline:** [docs/DECK_OUTLINE.md](docs/DECK_OUTLINE.md)
+- **Pitch Deck Outline (10 Slides):** [docs/DECK_OUTLINE.md](docs/DECK_OUTLINE.md)
 - **REST API Specifications:** [docs/API.md](docs/API.md)
 - **Changelog & Stage Updates:** [UPDATES_AND_CHANGES.md](UPDATES_AND_CHANGES.md)
 - **Legal Citations Catalog:** [src/shared/citations.ts](src/shared/citations.ts)

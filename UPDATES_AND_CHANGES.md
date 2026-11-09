@@ -113,7 +113,7 @@ Use the floating **Judge Demo Bar** at the top of the screen to jump directly in
 2. Point out plot `DAG-2026-001` with `10.40` shotok available.
 3. Click the purple button: **"২০টি সমান্তরাল বিক্রয় রিকোয়েস্ট পাঠান (Fire 20 Concurrent Sales)"**.
 4. **Show the judges:** Exactly **1 transaction succeeded** and **19 transactions were instantly blocked** by the SQLite `BEGIN IMMEDIATE` lock and `CHECK(available >= 0)` constraint. Remaining area is exactly `0.40` shotok.
-5. **Pitch script:** *"In legacy systems relying on client checks or delayed database triggers, concurrent buyers cause catastrophic double-allocations. SmartBhumi guarantees atomic, zero-roundoff micro-shotok balance integrity at the database engine level."*
+5. **Pitch script:** *"In legacy systems relying on client checks or delayed database triggers, concurrent buyers cause catastrophic double-allocations. SmartBhumi enforces atomic, zero-roundoff micro-shotok balance integrity at the database engine level."*
 
 ### ⏱️ Act 2: Offline Verifiable QR & Paper Tampering (Problem P2) — 0:50 to 1:50
 1. Click **"Act 2: Offline Tamper (P2)"** in the Judge Demo Bar (or navigate to `/`).
@@ -143,7 +143,7 @@ Use the floating **Judge Demo Bar** at the top of the screen to jump directly in
 ### ⏱️ Wrap-up & Reset — 2:40 to 3:00
 1. Click the amber **"রিসেট (<১০০ms)"** button in the Judge Demo Bar.
 2. In under 25 milliseconds, the database is restored to clean seed state ready for the next judge.
-3. **Closing line:** *"SmartBhumi does not claim unhackable magic. We deliver server-enforced area conservation, offline mathematical transparency, and a concrete bridge between registration and e-mutation."*
+3. **Closing line:** *"SmartBhumi makes no claims of absolute invulnerability. We deliver server-enforced area conservation, offline mathematical transparency, and a concrete bridge between registration and e-mutation."*
 
 ---
 
@@ -156,7 +156,7 @@ Use the floating **Judge Demo Bar** at the top of the screen to jump directly in
 
 ## 5. Round 1 to Final Summary Table
 
-| Capability | Round 1 (26th Place) | Final Round (SmartBhumi) | Hackathon Impact |
+| Capability | Round 1 Baseline | Final Round (SmartBhumi) | Architectural Benefit |
 | :--- | :--- | :--- | :--- |
 | **Backend & Storage** | Zustand / browser localStorage | Node SQLite WAL with `BEGIN IMMEDIATE` & CHECK constraints | Zero lost writes, sub-30ms fast reset |
 | **Area Accounting** | Floating-point numbers in UI | 64-bit Integer micro-shotok (`1 shotok = 1,000,000`) | Mathematically prevents double-sales |

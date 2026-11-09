@@ -21,12 +21,10 @@
 
 ---
 
-## Slide 3: Round 1 Reflection & The Strategic Pivot
-- **Our Starting Point:** In Round 1, we placed 26th because we had no real backend, relied on browser localStorage, used fragile byte hashing, and had no double-sale prevention.
-- **The Top Contender Benchmark:**
-  - 1st place project (BhumiSutra) had a local hash chain, client QR, and inheritance.
-  - 2nd place project (LDIS) had a Postgres backend with database workflow.
-- **Our Championship Architecture:** We engineered a complete dual-tier upgrade:
+## Slide 3: Round 1 Reflection & The Strategic Architecture Upgrade
+- **Our Starting Point:** In Round 1, the baseline prototype operated on client-side state, relied on fragile file byte hashes, and lacked transactional double-sale prevention.
+- **The Core Architectural Mandate:** We identified the necessity of combining a server-enforced transactional workflow with an append-only transparency log and offline-verifiable proofs.
+- **Our Final Round Architecture:** We engineered a complete dual-tier upgrade:
   1. High-throughput SQLite engine with database-level invariant enforcement (`CHECK >= 0`) in `BEGIN IMMEDIATE` transactions.
   2. RFC 9162 Merkle transparency log with dual Ed25519 + NIST ML-DSA-65 post-quantum Signed Tree Heads.
   3. Scan-tolerant canonical field hashing and a compact (<700B) self-contained offline QR code.
@@ -91,7 +89,7 @@
 
 ## Slide 9: Claims Discipline & National Legal Feasibility
 - **What SmartBhumi Strictly Does NOT Claim:**
-  - We do *not* claim "unhackable" or "tamper-proof" magic.
+  - We make no claims of absolute invulnerability or impossible cryptographic perfection.
   - A verified QR code proves that a deed was legally registered and has not been altered since; it does not replace physical title adjudication in civil court.
   - Physical execution before the Sub-Registrar remains legally required under the Registration Act.
   - Mutation is an administrative record-of-rights update for land revenue collection, not a decree of final ownership.
@@ -102,15 +100,16 @@
 
 ---
 
-## Slide 10: Summary & Why SmartBhumi Wins 1st Place
+## Slide 10: Summary & Championship Readiness
 - **The Full-Stack Leap:**
-  - From 26th place to an enterprise-grade digital land record infrastructure.
+  - From baseline prototype to an enterprise-grade digital land record infrastructure.
   - 100% test coverage: 20/20 Vitest unit/concurrency tests + 8/8 legacy verification tests.
   - Ultra-fast <30ms database reset enables rapid judge-by-judge demonstrations.
-- **Core Competitive Advantages Over All Other Teams:**
+- **Core Competitive Advantages:**
   1. Only team with **server-enforced atomic micro-shotok area accounting**.
   2. Only team with **RFC 9162 Merkle tree transparency logs**.
   3. Only team with **sub-700B offline QR codes verifiable in airplane mode**.
   4. Only team with **NIST ML-DSA-65 post-quantum dual signatures**.
   5. Only team with a **live interactive Red-Team Security Lab**.
 - **Call to Action:** *"SmartBhumi transforms Bangladesh land registration from a paper-based vulnerability into a mathematically verifiable, citizen-empowered truth."*
+
