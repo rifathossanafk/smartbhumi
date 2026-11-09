@@ -24,7 +24,7 @@ coverage/
 *.sqlite*
 *-wal
 *-shm
-data/
+/data/
 logs/
 *.log
 npm-debug.log*
