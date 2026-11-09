@@ -244,6 +244,10 @@ describe('Stages A3 & A4: Red-Team Tamper Demos & Dual Signatures', () => {
 // STAGE A5: REGISTRY TO E-MUTATION PIPELINE
 // ==========================================
 describe('Stage A5: Registry to e-Mutation Pipeline', () => {
+  beforeAll(() => {
+    resetDatabaseFast();
+  });
+
   it('creates an e-mutation case upon deed sealing and places area in mutation_pending', () => {
     const db = getDb();
     const deedId = 'deed-mut-test';
@@ -255,12 +259,12 @@ describe('Stage A5: Registry to e-Mutation Pipeline', () => {
         buyer_name_en, buyer_name_bn, buyer_nid_masked,
         plot_share_id, dag_number, mouza_code, khatian_number,
         transfer_area, upazila, district, division, registration_date, registered_by, is_synthetic
-      ) VALUES (?, 'LP-2026-MUT1', 'sale', 'registered', 'Mut Buyer', 'ক্রেতা', '999000*****5555', 'ps-001', 'DAG-2026-001', 'MOUZA-DEMO-001', 'KH-2026-0001', ?, 'Savar', 'Dhaka', 'Dhaka', '2026-01-01', 'officer', 1)
+      ) VALUES (?, 'LP-2026-MUT1', 'sale', 'registered', 'Mut Buyer', 'ক্রেতা', '999000*****5555', 'ps-006', 'DAG-2026-006', 'MOUZA-DEMO-004', 'KH-2026-0006', ?, 'Gazipur', 'Gazipur', 'Dhaka', '2026-01-01', 'officer', 1)
     `).run(deedId, transferMicro);
 
-    const shareBefore = db.prepare('SELECT mutation_pending FROM plot_shares WHERE id = ?').get('ps-001') as any;
+    const shareBefore = db.prepare('SELECT mutation_pending FROM plot_shares WHERE id = ?').get('ps-006') as any;
     const caseId = createMutationCaseForDeed(deedId);
-    const shareAfter = db.prepare('SELECT mutation_pending FROM plot_shares WHERE id = ?').get('ps-001') as any;
+    const shareAfter = db.prepare('SELECT mutation_pending FROM plot_shares WHERE id = ?').get('ps-006') as any;
 
     expect(caseId.startsWith('mut-')).toBe(true);
     expect(shareAfter.mutation_pending - shareBefore.mutation_pending).toBe(transferMicro);
