@@ -463,24 +463,34 @@ export function setLogAppender(fn: (id: string) => any) {
 
 /**
  * Reset database state to pristine seed data in < 100ms.
+ * Truncates all tables atomically inside an IMMEDIATE transaction,
+ * guaranteeing zero Windows file locking (EBUSY) issues.
  */
 export function resetDatabaseFast(): number {
   const start = performance.now();
-  closeDb();
+  const db = getDb();
 
-  // Remove database and WAL/SHM companion files
-  for (const ext of ['', '-wal', '-shm']) {
-    const f = DB_FILE + ext;
-    if (fs.existsSync(f)) {
-      try {
-        fs.unlinkSync(f);
-      } catch {
-        // file could be busy briefly
-      }
-    }
+  db.exec('PRAGMA foreign_keys = OFF;');
+  db.exec('BEGIN IMMEDIATE;');
+  try {
+    db.exec(`
+      DELETE FROM audit_log;
+      DELETE FROM mutation_cases;
+      DELETE FROM survey_lineage;
+      DELETE FROM encumbrances;
+      DELETE FROM deeds;
+      DELETE FROM plot_shares;
+      DELETE FROM khatians;
+      DELETE FROM merkle_leaves;
+      DELETE FROM merkle_sth;
+    `);
+    db.exec('COMMIT;');
+  } catch (err) {
+    db.exec('ROLLBACK;');
+  } finally {
+    db.exec('PRAGMA foreign_keys = ON;');
   }
 
-  const db = getDb();
   seedDatabase(db);
   if (_logAppender) {
     try {
