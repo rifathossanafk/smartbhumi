@@ -391,7 +391,7 @@ export const INITIAL_PLOT_OWNERSHIP: PlotOwnership[] = [
     surveyType: 'RS',
     landArea: 15,
     landAreaUnit: 'decimal',
-    nid: '19852694123456789',
+    nid: '99900012345678901',
   },
   {
     id: 'own-002',
@@ -406,7 +406,7 @@ export const INITIAL_PLOT_OWNERSHIP: PlotOwnership[] = [
     surveyType: 'BS',
     landArea: 8.5,
     landAreaUnit: 'decimal',
-    nid: '19741918239012345',
+    nid: '99900022345678902',
   },
   {
     id: 'own-003',
@@ -421,7 +421,7 @@ export const INITIAL_PLOT_OWNERSHIP: PlotOwnership[] = [
     surveyType: 'CS',
     landArea: 22,
     landAreaUnit: 'decimal',
-    nid: '19901519827364512',
+    nid: '99900032345678903',
   },
   {
     id: 'own-004',
@@ -436,7 +436,7 @@ export const INITIAL_PLOT_OWNERSHIP: PlotOwnership[] = [
     surveyType: 'SA',
     landArea: 1.5,
     landAreaUnit: 'acre',
-    nid: '19688192736451029',
+    nid: '99900042345678904',
   },
   // Note: No ownership entry for DAG-2026-005 (Khulna) — tests missing reference case
   {
@@ -452,7 +452,7 @@ export const INITIAL_PLOT_OWNERSHIP: PlotOwnership[] = [
     surveyType: 'BS',
     landArea: 5,
     landAreaUnit: 'katha',
-    nid: '19822691827364501',
+    nid: '99900052345678905',
   },
   {
     id: 'own-007',
@@ -467,7 +467,7 @@ export const INITIAL_PLOT_OWNERSHIP: PlotOwnership[] = [
     surveyType: 'RS',
     landArea: 30,
     landAreaUnit: 'decimal',
-    nid: '19799182736450192',
+    nid: '99900062345678906',
   },
 ];
 
