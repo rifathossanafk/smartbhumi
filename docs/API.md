@@ -356,3 +356,4 @@ Calculates simplified Islamic inheritance shares (spouse, parents, sons, daughte
     "disclaimer": "ILLUSTRATIVE ONLY — This is a simplified calculation covering only spouse, parents, sons, and daughters. It does not handle awl, radd, Dayabhaga, or complex cases. Not legal advice. Consult a qualified lawyer."
   }
   ```
+
