@@ -337,7 +337,7 @@ export const PrintDeedsPage: React.FC = () => {
             <div className="p-3 bg-slate-900 text-white rounded-xl text-xs space-y-1">
               <div className="font-bold text-amber-400 flex items-center gap-1.5">
                 <AlertTriangle className="w-4 h-4 text-amber-400" />
-                <span>ক্রিপ্টোগ্রাফিক সুরক্ষা মেকানিজম (Security Guarantee):</span>
+                <span>ক্রিপ্টোগ্রাফিক সুরক্ষা বৈশিষ্ট্য (Security Property):</span>
               </div>
               <p className="text-slate-300 text-[11px] leading-relaxed">
                 যেহেতু অফলাইন কিউআর কোডের ভেতরে <code>claims.transferMicroShotok = 15000000</code> সংরক্ষিত এবং এটি সাব-রেজিস্ট্রারের Ed25519 কী দ্বারা সিলমোহরকৃত, তাই কাগজে জালিয়াতি করে ২৫.০০ শতক লিখলেও স্মার্টভূমি অফলাইন ভেরিফায়ার তাৎক্ষণিক দাবি-অসঙ্গতি (Claim Mismatch) শনাক্ত করে দলিলটি বাতিল ঘোষণা করে।

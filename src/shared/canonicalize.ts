@@ -3,7 +3,7 @@
  *
  * WHY: We need a deterministic byte representation of deed data so that
  * the same deed always produces the same hash. JSON.stringify does not
- * guarantee key order, so we sort keys recursively, normalize Unicode
+ * ensure key order, so we sort keys recursively, normalize Unicode
  * to NFC, and format numbers as plain ASCII digits (no scientific notation).
  *
  * This module is used by both server (to build Merkle leaves) and

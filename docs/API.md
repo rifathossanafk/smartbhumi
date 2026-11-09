@@ -67,7 +67,7 @@ Returns the complete real-time registry state including all khatians, plot share
 
 #### `POST /api/db/reset`
 Drops and re-seeds the SQLite database with pristine synthetic demo records.
-- **Performance:** Completes in `< 30ms` (guaranteed `< 100ms`).
+- **Performance:** Completes in `< 30ms` (designed for `< 100ms`).
 - **Response `200`:**
   ```json
   {
@@ -193,7 +193,7 @@ Returns the current Signed Tree Head (STH) and trusted public authority keys.
 
 #### `GET /api/deeds/:id/qr`
 Generates the printable compact QR payload for a sealed deed.
-- **Size Guarantee:** Always under 700 bytes (typical ~520-550 bytes).
+- **Size Budget:** Under 700 bytes (typical ~520-550 bytes).
 - **Response `200`:**
   ```json
   {

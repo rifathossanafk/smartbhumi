@@ -161,6 +161,7 @@ describe('Stage A2: Signed Merkle Log & Offline QR Payload', () => {
   });
 
   it('generates QR payloads strictly under the 700-byte budget', () => {
+    resetDatabaseFast();
     const db = getDb();
     // Register a test deed
     const deedId = 'qr-budget-test-deed';
