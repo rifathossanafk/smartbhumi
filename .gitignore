@@ -46,6 +46,11 @@ keys/
 handoff/
 handoff-inputs/
 scratch/
+START_HERE.md
+MANIFEST.md
+guides/
+reports/
+reference/
 
 # OS junk
 .DS_Store
