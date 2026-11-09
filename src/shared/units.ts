@@ -69,3 +69,4 @@ export function formatArea(microShotok: number, unit: AreaUnit = 'shotok'): stri
   const formatted = value.toFixed(2).replace(/\.?0+$/, '');
   return `${formatted} ${unit}`;
 }
+

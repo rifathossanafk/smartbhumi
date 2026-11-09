@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "test": "node tests/verification.test.mjs"
+    "server": "tsx server/index.ts",
+    "bench:pqc": "tsx scripts/benchPqc.ts",
+    "test": "vitest run",
+    "test:legacy": "node tests/verification.test.mjs"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
@@ -16,11 +19,18 @@
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
     "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.15",
     "typescript": "~6.0.2",
-    "vite": "^8.3.0"
+    "vite": "^8.3.0",
+    "vitest": "^5.1.0"
   },
   "dependencies": {
+    "@hono/node-server": "1.14.1",
+    "@noble/curves": "1.8.1",
+    "@noble/hashes": "1.7.1",
+    "@noble/post-quantum": "0.2.1",
     "date-fns": "^4.4.0",
+    "hono": "4.7.7",
     "i18next": "^26.4.7",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.58.0",
@@ -30,6 +40,7 @@
     "react-i18next": "^17.0.20",
     "react-leaflet": "^5.0.0",
     "react-router-dom": "^7.18.4",
+    "sql.js": "1.12.0",
     "zustand": "^5.0.15"
   }
 }

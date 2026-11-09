@@ -27,3 +27,8 @@ dist-ssr
 DEMO_SCRIPT.md
 DEMO_SCRIPT*.md
 
+# Local SQLite databases
+data/*.db
+data/*.db-wal
+data/*.db-shm
+
