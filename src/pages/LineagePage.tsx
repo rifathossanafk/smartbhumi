@@ -629,3 +629,4 @@ export const LineagePage: React.FC = () => {
     </div>
   );
 };
+

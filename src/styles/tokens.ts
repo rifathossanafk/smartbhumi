@@ -102,3 +102,4 @@ export function toBanglaDigits(val: string | number, locale: string = 'bn'): str
   const bnDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
   return String(val).replace(/\d/g, (d) => bnDigits[parseInt(d, 10)]);
 }
+

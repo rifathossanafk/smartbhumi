@@ -226,3 +226,4 @@ export const AppNavbar: React.FC = () => {
     </header>
   );
 };
+

@@ -196,3 +196,4 @@ export async function calculateFaraiz(payload: {
     body: JSON.stringify(payload),
   });
 }
+

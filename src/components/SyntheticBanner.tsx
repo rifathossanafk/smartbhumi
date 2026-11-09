@@ -29,3 +29,4 @@ export const SyntheticBanner: React.FC = () => {
     </aside>
   );
 };
+

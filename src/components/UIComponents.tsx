@@ -117,3 +117,4 @@ export const EmptyState: React.FC<{
     {action && <div className="mt-2">{action}</div>}
   </div>
 );
+
