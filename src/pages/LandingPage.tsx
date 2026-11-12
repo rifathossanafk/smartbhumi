@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useStore } from '../store/useStore';
 import { BangladeshMapIcon } from '../components/BangladeshMapIcon';
+import { toBanglaDigits } from '../styles/tokens';
 import {
   ShieldCheck,
   QrCode,
@@ -24,6 +25,10 @@ import {
   ChevronRight,
   Wheat,
   Landmark,
+  GitBranch,
+  PlusCircle,
+  BookOpen,
+  Printer,
 } from 'lucide-react';
 
 /* ─── Animated counter hook ─────────────────────── */
@@ -55,10 +60,60 @@ const CORE_SERVICES = [
   {
     icon: FileCheck2,
     titleEn: 'Deed Verification',
-    titleBn: 'দলিল যাচাইকরণ',
-    descEn: 'Instantly verify the authenticity of any registered deed using SHA-256 cryptographic fingerprinting.',
-    descBn: 'SHA-256 ক্রিপ্টোগ্রাফিক পদ্ধতিতে যেকোনো নিবন্ধিত দলিলের সত্যতা তাৎক্ষণিকভাবে যাচাই করুন।',
+    titleBn: 'দলিল ও কিউআর যাচাই',
+    descEn: 'Offline-verifiable deeds with dual Ed25519 and ML-DSA-65 post-quantum digital signatures.',
+    descBn: 'অফলাইন-ভেরিফিয়েবল কিউআর কোড এবং এড২৫৫১৯ ও এমএল-ডিএসএ-৬৫ ডুয়াল স্বাক্ষরিত দলিল যাচাই।',
     link: '/verify',
+    color: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    iconBg: 'bg-emerald-100 text-emerald-700',
+  },
+  {
+    icon: PlusCircle,
+    titleEn: 'Double-Sale Prevention',
+    titleBn: 'ডাবল-সেল প্রতিরোধ ও রেজিস্ট্রি',
+    descEn: 'Server-enforced micro-shotok area accounting with concurrency locking prevents duplicate sales.',
+    descBn: 'মাইক্রো-শতক এরিয়া অ্যাকাউন্টিং এবং কনকারেন্সি লকিং এর মাধ্যমে একই জমি বারবার বিক্রি রোধ।',
+    link: '/register',
+    color: 'bg-green-50 text-green-700 border-green-200',
+    iconBg: 'bg-green-100 text-green-700',
+  },
+  {
+    icon: GitBranch,
+    titleEn: 'e-Mutation Pipeline',
+    titleBn: 'ই-নামজারি ও এসি ল্যান্ড',
+    descEn: 'Seamless registry-to-mutation flow with automated hearing dates and atomic khatian creation.',
+    descBn: 'সাব-রেজিস্ট্রি থেকে স্বয়ংক্রিয় ই-নামজারি প্রস্তাব, শুনানির নোটিশ এবং খতিয়ান বিভাজন।',
+    link: '/mutation',
+    color: 'bg-teal-50 text-teal-700 border-teal-200',
+    iconBg: 'bg-teal-100 text-teal-700',
+  },
+  {
+    icon: Layers,
+    titleEn: 'Merkle Transparency Log',
+    titleBn: 'মার্কেল অডিট লেজার ও পিভিকিউসি',
+    descEn: 'RFC 9162 append-only cryptographic ledger with signed tree heads and interactive red-team lab.',
+    descBn: 'আরএফসি ৯১৬২ অ্যাপেন্ড-অনলি অডিট লেজার, সাইনড ট্রি হেড এবং লাইভ রেড-টিম সিকিউরিটি ল্যাব।',
+    link: '/ledger',
+    color: 'bg-cyan-50 text-cyan-700 border-cyan-200',
+    iconBg: 'bg-cyan-100 text-cyan-700',
+  },
+  {
+    icon: BookOpen,
+    titleEn: 'Cadastral Lineage & Faraiz',
+    titleBn: 'খতিয়ান লিনিয়েজ ও ফারায়েজ',
+    descEn: 'Trace CS->SA->RS->BS survey evolution and Islamic faraiz inheritance share distribution.',
+    descBn: 'সিএস থেকে বিএস জরিপের ধারাবাহিক নকশা লিনিয়েজ এবং ফারায়েজ বণ্টন ক্যালকুলেটর।',
+    link: '/lineage',
+    color: 'bg-amber-50 text-amber-700 border-amber-200',
+    iconBg: 'bg-amber-100 text-amber-700',
+  },
+  {
+    icon: MapPin,
+    titleEn: 'Cadastral Map',
+    titleBn: 'ক্যাডাস্ট্রাল মানচিত্র',
+    descEn: 'View exact cadastral plot polygons, boundaries, and land classification on interactive GIS maps.',
+    descBn: 'ইন্টারেক্টিভ জিআইএস মানচিত্রে দাগের সীমানা, পরিসীমা ও জমির শ্রেণি দেখুন।',
+    link: '/map',
     color: 'bg-emerald-50 text-emerald-700 border-emerald-200',
     iconBg: 'bg-emerald-100 text-emerald-700',
   },
@@ -69,28 +124,18 @@ const CORE_SERVICES = [
     descEn: 'Search land records by Mouza, Dag number, Khatian or owner name across all divisions of Bangladesh.',
     descBn: 'মৌজা, দাগ নম্বর, খতিয়ান বা মালিকের নাম দিয়ে বাংলাদেশের যেকোনো বিভাগের ভূমি রেকর্ড অনুসন্ধান করুন।',
     link: '/search',
-    color: 'bg-green-50 text-green-700 border-green-200',
-    iconBg: 'bg-green-100 text-green-700',
-  },
-  {
-    icon: MapPin,
-    titleEn: 'Cadastral Map',
-    titleBn: 'ক্যাডাস্ট্রাল মানচিত্র',
-    descEn: 'View exact cadastral plot polygons, boundaries, and land classification on interactive GIS maps.',
-    descBn: 'ইন্টারেক্টিভ জিআইএস মানচিত্রে দাগের সীমানা, পরিসীমা ও জমির শ্রেণি দেখুন।',
-    link: '/map',
-    color: 'bg-teal-50 text-teal-700 border-teal-200',
-    iconBg: 'bg-teal-100 text-teal-700',
-  },
-  {
-    icon: QrCode,
-    titleEn: 'Smart QR Scan',
-    titleBn: 'স্মার্ট কিউআর স্ক্যান',
-    descEn: 'Scan QR codes embedded in official land documents to instantly retrieve authenticated porcha records.',
-    descBn: 'সরকারি দলিলে মুদ্রিত QR কোড স্ক্যান করে তাৎক্ষণিকভাবে পর্চা ও রেকর্ড দেখুন।',
-    link: '/verify',
     color: 'bg-lime-50 text-lime-700 border-lime-200',
     iconBg: 'bg-lime-100 text-lime-700',
+  },
+  {
+    icon: Printer,
+    titleEn: 'Printable Test Kit',
+    titleBn: 'প্রিন্ট কিট (বিচারকদের জন্য)',
+    descEn: 'Official A4 deeds with authentic QR codes ready for camera scanning and offline verification.',
+    descBn: 'বিচারকদের মূল্যায়নের জন্য তৈরি অফিশিয়াল এ৪ দলিল ও কিউআর স্ক্যান টেস্ট কিট।',
+    link: '/print-deeds',
+    color: 'bg-purple-50 text-purple-700 border-purple-200',
+    iconBg: 'bg-purple-100 text-purple-700',
   },
 ];
 
@@ -104,10 +149,10 @@ const LAND_TYPES = [
 
 /* ─── Survey types ───────────────────────────── */
 const SURVEY_TYPES = [
-  { code: 'CS', nameEn: 'Cadastral Survey (CS)', nameBn: 'সিএস জরিপ', year: '১৮৮৮ – ১৯৪০', desc: 'Colonial cadastral baseline' },
-  { code: 'SA', nameEn: 'State Acquisition (SA)', nameBn: 'এসএ জরিপ', year: '১৯৫৬ – ১৯৬২', desc: 'Post-partition land settlement' },
-  { code: 'RS', nameEn: 'Revisional Survey (RS)', nameBn: 'আরএস জরিপ', year: '১৯৬২ – বর্তমান', desc: 'Current standard cadastral record' },
-  { code: 'BS', nameEn: 'City Survey (BS)', nameBn: 'বিএস জরিপ', year: 'শহর জরিপ', desc: 'Urban municipality records' },
+  { code: 'CS', nameEn: 'Cadastral Survey (CS)', nameBn: 'সিএস জরিপ', year: '১৮৮৮ – ১৯৪০', descEn: 'Colonial cadastral baseline and historical boundaries', descBn: 'ব্রিটিশ আমলের আদি ভূ-জরিপ ও মূল ক্যাডাস্ট্রাল সীমানা' },
+  { code: 'SA', nameEn: 'State Acquisition (SA)', nameBn: 'এসএ জরিপ', year: '১৯৫৬ – ১৯৬২', descEn: 'Post-partition land settlement and zamindari abolition', descBn: 'জমিদারি প্রথা বিলুপ্তির পর রাষ্ট্রীয় অধিগ্রহণ জরিপ' },
+  { code: 'RS', nameEn: 'Revisional Survey (RS)', nameBn: 'আরএস জরিপ', year: '১৯৬২ – বর্তমান', descEn: 'Current standard cadastral revisional land record', descBn: 'বর্তমান প্রমিত ডিজিটাল ক্যাডাস্ট্রাল সংশোধিত রেকর্ড' },
+  { code: 'BS', nameEn: 'City Survey (BS)', nameBn: 'বিএস জরিপ (সিটি)', year: '১৯৯৮ – বর্তমান', descEn: 'Modern urban municipality cadastral records', descBn: 'আধুনিক পৌরসভা ও মহানগরীর নির্ভুল নগর ভূমি জরিপ' },
 ];
 
 export const LandingPage: React.FC = () => {
@@ -116,14 +161,17 @@ export const LandingPage: React.FC = () => {
   const isBn = i18n.language === 'bn';
   const [activeType, setActiveType] = useState(0);
 
-  const verifiedCount = useCounter(verificationEvents.filter(e => e.outcome === 'verified' || e.outcome === 'success').length);
-  const recordCount = useCounter(landRecords.length);
+  const safeEvents = Array.isArray(verificationEvents) ? verificationEvents : [];
+  const safeRecords = Array.isArray(landRecords) ? landRecords : [];
+
+  const verifiedCount = useCounter(safeEvents.filter(e => e && (e.outcome === 'verified' || e.outcome === 'success')).length);
+  const recordCount = useCounter(safeRecords.length);
 
   return (
     <div className="space-y-0 pb-0">
 
       {/* ══════════════════════════════════════════════════
-          HERO SECTION — Land Map Geometry Background
+          HERO SECTION: Land Map Geometry Background
       ══════════════════════════════════════════════════ */}
       <section className="relative overflow-hidden bg-gradient-to-b from-[#071c0f] via-[#0d3b1e] to-[#14532d] text-white min-h-[92vh] flex flex-col justify-center">
         {/* Land Map Geometry Background */}
@@ -139,7 +187,7 @@ export const LandingPage: React.FC = () => {
         <div className="container mx-auto max-w-7xl px-4 relative z-10 py-24">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
-            {/* Left — Title + Description */}
+            {/* Left: Title + Description */}
             <div className="space-y-8 animate-slide-up">
               {/* Official badge */}
               <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-emerald-900/60 border border-emerald-600/40 text-emerald-300 text-xs font-semibold backdrop-blur-md">
@@ -156,16 +204,16 @@ export const LandingPage: React.FC = () => {
                 <h1 className="text-4xl sm:text-5xl xl:text-6xl font-extrabold tracking-tight leading-[1.3] sm:leading-[1.3] text-white">
                   {isBn ? (
                     <>
-                      স্মার্ট ভূমি সেবা —{' '}
+                      স্মার্ট ভূমি সেবা ও{' '}
                       <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-green-300 to-lime-300">
-                        ডিজিটাল বাংলাদেশ
+                        ডিজিটাল দলিল যাচাইকরণ
                       </span>
                     </>
                   ) : (
                     <>
-                      Smart Land Registry{' '}
+                      Smart Land Registry &{' '}
                       <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-green-300 to-lime-300">
-                        — Digital Bangladesh
+                        Digital Title Verification
                       </span>
                     </>
                   )}
@@ -198,17 +246,21 @@ export const LandingPage: React.FC = () => {
               {/* Quick stats */}
               <div className="grid grid-cols-2 gap-3 pt-2">
                 <div className="bg-white/5 border border-white/10 rounded-2xl px-5 py-4 backdrop-blur-sm">
-                  <div className="text-2xl font-extrabold text-emerald-300 font-mono">{recordCount}</div>
+                  <div className="text-2xl font-extrabold text-emerald-300 font-mono">
+                    {toBanglaDigits(recordCount, isBn ? 'bn' : 'en')}
+                  </div>
                   <div className="text-xs text-emerald-100/70 mt-0.5">{isBn ? 'নিবন্ধিত দলিল' : 'Registered Deeds'}</div>
                 </div>
                 <div className="bg-white/5 border border-white/10 rounded-2xl px-5 py-4 backdrop-blur-sm">
-                  <div className="text-2xl font-extrabold text-green-300 font-mono">{verifiedCount}</div>
+                  <div className="text-2xl font-extrabold text-green-300 font-mono">
+                    {toBanglaDigits(verifiedCount, isBn ? 'bn' : 'en')}
+                  </div>
                   <div className="text-xs text-green-100/70 mt-0.5">{isBn ? 'সফল ভেরিফিকেশন' : 'Verified Records'}</div>
                 </div>
               </div>
             </div>
 
-            {/* Right — Visual Info Card */}
+            {/* Right: Visual Info Card */}
             <div className="hidden lg:block animate-float">
               <div className="relative">
                 {/* Main card */}
@@ -221,11 +273,13 @@ export const LandingPage: React.FC = () => {
                       </div>
                       <div>
                         <div className="text-sm font-bold text-white">{isBn ? 'ক্যাডাস্ট্রাল প্রিভিউ' : 'Cadastral Preview'}</div>
-                        <div className="text-[11px] text-emerald-400">RS & BS Survey Records</div>
+                        <div className="text-[11px] text-emerald-400">
+                          {isBn ? 'আরএস ও বিএস ক্যাডাস্ট্রাল রেকর্ড' : 'RS & BS Survey Records'}
+                        </div>
                       </div>
                     </div>
                     <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-900/60 border border-emerald-600/40 text-emerald-300">
-                      ● LIVE
+                      {isBn ? '● লাইভ' : '● LIVE'}
                     </span>
                   </div>
 
@@ -288,10 +342,13 @@ export const LandingPage: React.FC = () => {
             {BD_STATS.map((stat, i) => (
               <div key={i} className="bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-center backdrop-blur-sm">
                 <div className={`text-2xl font-extrabold font-mono ${stat.color}`}>
-                  {stat.value >= 1000000
-                    ? `${(stat.value / 1000000).toFixed(1)}M`
-                    : stat.value}
-                  {stat.suffix}
+                  {isBn
+                    ? (stat.value >= 1000000
+                        ? `${toBanglaDigits((stat.value / 1000000).toFixed(1), 'bn')}M${stat.suffix}`
+                        : `${toBanglaDigits(stat.value, 'bn')}${stat.suffix}`)
+                    : (stat.value >= 1000000
+                        ? `${(stat.value / 1000000).toFixed(1)}M${stat.suffix}`
+                        : `${stat.value}${stat.suffix}`)}
                 </div>
                 <div className="text-xs text-white/60 mt-1">{isBn ? stat.labelBn : stat.labelEn}</div>
               </div>
@@ -389,7 +446,9 @@ export const LandingPage: React.FC = () => {
                     <div className="text-sm font-bold text-white">{isBn ? survey.nameBn : survey.nameEn}</div>
                     <div className="text-xs text-emerald-400 font-mono mt-0.5">{survey.year}</div>
                   </div>
-                  <p className="text-xs text-emerald-200/60">{survey.desc}</p>
+                  <p className="text-xs text-emerald-200/60 leading-relaxed">
+                    {isBn ? survey.descBn : survey.descEn}
+                  </p>
                 </div>
               ))}
             </div>
@@ -470,8 +529,8 @@ export const LandingPage: React.FC = () => {
 
               <div className="text-xs text-emerald-500 text-center border-t border-emerald-800/40 pt-4">
                 {isBn
-                  ? 'তথ্যসূত্র: ভূমি মন্ত্রণালয় বাংলাদেশ — ভূমি জরিপ প্রতিবেদন ২০২৫'
-                  : 'Source: Ministry of Land Bangladesh — Land Survey Report 2025'}
+                  ? 'তথ্যসূত্র: ভূমি মন্ত্রণালয় বাংলাদেশ (জাতীয় ভূমি জরিপ প্রতিবেদন ২০২৫)'
+                  : 'Source: Ministry of Land Bangladesh (National Land Survey Report 2025)'}
               </div>
             </div>
           </div>
@@ -486,7 +545,7 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* ══════════════════════════════════════════════════
-          HOW IT WORKS — VERIFICATION PROCESS
+          HOW IT WORKS: VERIFICATION PROCESS
       ══════════════════════════════════════════════════ */}
       <section className="bg-[#f0fdf4] py-20 px-4">
         <div className="container mx-auto max-w-6xl space-y-10">

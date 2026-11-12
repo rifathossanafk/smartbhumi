@@ -1,0 +1,54 @@
+{
+  "genuine": {
+    "fixtureId": "genuine",
+    "deedNumber": "LP-2026-001",
+    "deedType": "sale",
+    "khatianNumber": "KH-2026-0001",
+    "dagNumber": "DAG-2026-001",
+    "mouzaNameBn": "হেমায়েতপুর",
+    "mouzaCode": "MOUZA-DEMO-001",
+    "areaShotokBn": "১৫.০০",
+    "areaShotokEn": "15.00",
+    "areaUnit": "শতক",
+    "sellerNameBn": "মোহাম্মদ আব্দুল করিম",
+    "buyerNameBn": "তানভীর আহমেদ",
+    "buyerNidMasked": "999000*****1001",
+    "registrationDate": "2026-01-15",
+    "sampleTextBn": "গণপ্রজাতন্ত্রী বাংলাদেশ সরকার\nসাব-রেজিস্ট্রার কার্যালয়, সাভার, ঢাকা\nদলিল নং: LP-2026-001 | তারিখ: ১৫ জানুয়ারি ২০২৬\nমৌজা: হেমায়েতপুর | খতিয়ান: KH-2026-0001 | দাগ: DAG-2026-001\nজমির পরিমাণ: ১৫.০০ শতক (পনের শতক মাত্র)\nদাতা: মোহাম্মদ আব্দুল করিম | গ্রহীতা: তানভীর আহমেদ"
+  },
+  "area_tampered": {
+    "fixtureId": "area_tampered",
+    "deedNumber": "LP-2026-001",
+    "deedType": "sale",
+    "khatianNumber": "KH-2026-0001",
+    "dagNumber": "DAG-2026-001",
+    "mouzaNameBn": "হেমায়েতপুর",
+    "mouzaCode": "MOUZA-DEMO-001",
+    "areaShotokBn": "২৫.০০",
+    "areaShotokEn": "25.00",
+    "areaUnit": "শতক",
+    "sellerNameBn": "মোহাম্মদ আব্দুল করিম",
+    "buyerNameBn": "তানভীর আহমেদ",
+    "buyerNidMasked": "999000*****1001",
+    "registrationDate": "2026-01-15",
+    "sampleTextBn": "গণপ্রজাতন্ত্রী বাংলাদেশ সরকার\nসাব-রেজিস্ট্রার কার্যালয়, সাভার, ঢাকা\nদলিল নং: LP-2026-001 | তারিখ: ১৫ জানুয়ারি ২০২৬\nমৌজা: হেমায়েতপুর | খতিয়ান: KH-2026-0001 | দাগ: DAG-2026-001\nজমির পরিমাণ: ২৫.০০ শতক (পঁচিশ শতক মাত্র)\nদাতা: মোহাম্মদ আব্দুল করিম | গ্রহীতা: তানভীর আহমেদ"
+  },
+  "khas": {
+    "fixtureId": "khas",
+    "deedNumber": "LP-2026-003",
+    "deedType": "sale",
+    "khatianNumber": "KH-2026-0003",
+    "dagNumber": "DAG-2026-003",
+    "mouzaNameBn": "ফতেপুর",
+    "mouzaCode": "MOUZA-DEMO-005",
+    "areaShotokBn": "২২.০০",
+    "areaShotokEn": "22.00",
+    "areaUnit": "শতক",
+    "sellerNameBn": "গণপ্রজাতন্ত্রী বাংলাদেশ সরকার (খাস)",
+    "buyerNameBn": "কামাল উদ্দিন",
+    "buyerNidMasked": "999000*****9999",
+    "registrationDate": "2026-03-10",
+    "sampleTextBn": "গণপ্রজাতন্ত্রী বাংলাদেশ সরকার\nসাব-রেজিস্ট্রার কার্যালয়, হাটহাজারী, চট্টগ্রাম\nদলিল নং: LP-2026-003 | তারিখ: ১০ মার্চ ২০২৬\nমৌজা: ফতেপুর | খতিয়ান: KH-2026-0003 (১নং খাস খতিয়ান) | দাগ: DAG-2026-003\nজমির পরিমাণ: ২২.০০ শতক (বাইশ শতক মাত্র)\nদাতা: গণপ্রজাতন্ত্রী বাংলাদেশ সরকার (খাস) | গ্রহীতা: কামাল উদ্দিন"
+  }
+}
+

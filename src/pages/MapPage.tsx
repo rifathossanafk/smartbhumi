@@ -250,13 +250,13 @@ export const MapPage: React.FC = () => {
               {isBn ? 'ক্যাডাস্ট্রাল ভূমি মানচিত্র ও মৌজা নকশা' : 'Cadastral GIS Land Map & Mouza Plots'}
             </h1>
             <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
-              Bangladesh GIS
+              {isBn ? 'বাংলাদেশ জিআইএস' : 'Bangladesh GIS'}
             </span>
           </div>
           <p className="text-xs sm:text-sm text-slate-600">
             {isBn
-              ? 'শুধুমাত্র বাংলাদেশের ভূখণ্ডে সীমাবদ্ধ ডিজিটাল ক্যাডাস্ট্রাল ভেক্টর ম্যাপ — দাগে ক্লিক করে সরাসরি বিস্তারিত ও পর্চা দেখুন।'
-              : 'Strictly bounded to Bangladesh territory with cadastral vector plot boundaries, automatic fly-to zoom, and title details.'}
+              ? 'ডিজিটাল ক্যাডাস্ট্রাল ভেক্টর ম্যাপে যেকোনো দাগে ক্লিক করে সরাসরি বিস্তারিত ও পর্চা দেখুন।'
+              : 'Click any cadastral plot polygon on the vector map to inspect boundaries and title details.'}
           </p>
         </div>
 
@@ -313,7 +313,7 @@ export const MapPage: React.FC = () => {
               <option value="">{isBn ? '-- দাগ নির্বাচন করুন --' : '-- Select Plot --'}</option>
               {landRecords.map((r) => (
                 <option key={r.id} value={r.id}>
-                  {r.dagNumber} — {r.mouza} ({r.landArea} {r.landAreaUnit})
+                  {r.dagNumber} ({r.mouza}, {r.landArea} {r.landAreaUnit})
                 </option>
               ))}
             </select>
@@ -385,7 +385,7 @@ export const MapPage: React.FC = () => {
 
           {tileError && (
             <div className="absolute top-4 left-4 z-20 bg-slate-900/90 text-white backdrop-blur p-2.5 rounded-xl border border-slate-700 text-[11px] shadow-md">
-              GIS Cadastral offline mode active.
+              {isBn ? 'জিআইএস ক্যাডাস্ট্রাল অফলাইন মোড সক্রিয়।' : 'GIS Cadastral offline mode active.'}
             </div>
           )}
 
@@ -468,7 +468,7 @@ export const MapPage: React.FC = () => {
                 <div className="flex justify-between py-1.5 border-b border-slate-100">
                   <span className="text-slate-500">{isBn ? 'খতিয়ান ও জরিপ শ্রেণি:' : 'Khatian & Survey:'}</span>
                   <span className="font-bold text-slate-900">
-                    {selectedRecord.khatianType} — {selectedRecord.khatianNumber}
+                    {selectedRecord.khatianType} ({selectedRecord.khatianNumber})
                   </span>
                 </div>
 

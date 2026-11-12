@@ -1,0 +1,22 @@
+{
+  "name": "SmartBhumi - Digital Land Records & Deed Verification",
+  "short_name": "SmartBhumi",
+  "description": "Offline-verifiable cryptographic land registry and digital deed verification platform",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8faf8",
+  "theme_color": "#065f46",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+

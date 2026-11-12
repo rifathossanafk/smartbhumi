@@ -1,0 +1,55 @@
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Home, Search, QrCode, GitBranch, Layers } from 'lucide-react';
+
+export const BottomNav: React.FC = () => {
+  const { i18n } = useTranslation();
+  const isBn = i18n.language === 'bn';
+
+  const navItems = [
+    { to: '/', labelBn: 'হোম', labelEn: 'Home', icon: Home },
+    { to: '/search', labelBn: 'অনুসন্ধান', labelEn: 'Search', icon: Search },
+    { to: '/verify', labelBn: 'যাচাই', labelEn: 'Verify', icon: QrCode },
+    { to: '/mutation', labelBn: 'নামজারি', labelEn: 'Mutation', icon: GitBranch },
+    { to: '/ledger', labelBn: 'লেজার', labelEn: 'Ledger', icon: Layers },
+  ];
+
+  return (
+    <nav
+      aria-label="Mobile Navigation"
+      className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-lg safe-bottom print:hidden"
+    >
+      <div className="grid grid-cols-5 h-16 max-w-md mx-auto">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          return (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) =>
+                `flex flex-col items-center justify-center gap-1 select-none transition-colors min-h-[48px] ${
+                  isActive ? 'text-emerald-800 font-bold' : 'text-slate-500 font-medium hover:text-slate-800'
+                }`
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  <div
+                    className={`p-1 rounded-full transition-transform ${
+                      isActive ? 'bg-emerald-100 text-emerald-800 scale-105' : ''
+                    }`}
+                  >
+                    <Icon className="w-5 h-5" />
+                  </div>
+                  <span className="text-[10px] tracking-tight">{isBn ? item.labelBn : item.labelEn}</span>
+                </>
+              )}
+            </NavLink>
+          );
+        })}
+      </div>
+    </nav>
+  );
+};
+
