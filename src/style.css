@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: 'Noto Sans Bengali', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Noto Sans Bengali', Georgia, serif;
+  --font-heading: 'Anek Bangla', 'Noto Sans Bengali', sans-serif;
+}
+
 @layer base {
   :root {
     --primary: #1a6b3c;
@@ -10,19 +16,36 @@
     --brand-gold: #b45309;
     --brand-accent: #4ade80;
     --brand-navy: #0f172a;
+    --font-sans: 'Noto Sans Bengali', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 
   html {
     scroll-behavior: smooth;
+    font-family: 'Noto Sans Bengali', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 
   body {
-    font-family: 'Hind Siliguri', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: 'Noto Sans Bengali', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
     color: #0f172a;
     background-color: #f0fdf4;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Universal typography: applies authentic Noto Sans Bengali across all components, forms, buttons, inputs */
+  button, input, textarea, select, optgroup, p, span, a, label, li, td, th {
+    font-family: 'Noto Sans Bengali', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-heading, .font-display {
+    font-family: 'Anek Bangla', 'Noto Sans Bengali', sans-serif !important;
+    letter-spacing: -0.012em;
+  }
+
+  /* Monospace stays intact for hashes, transaction IDs, public keys, and Merkle proofs */
+  code, kbd, samp, pre, .font-mono, [class*="font-mono"] {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
   }
 }
 
@@ -100,12 +123,12 @@
     box-sizing: border-box !important;
     background-color: #ffffff !important;
     background: #ffffff !important;
-    height: 270mm !important;
-    max-height: 270mm !important;
+    min-height: 262mm !important;
+    max-height: 276mm !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
-    padding: 18px 22px !important;
+    padding: 14px 18px !important;
     margin: 0 auto !important;
     border-radius: 0 !important;
   }
@@ -270,4 +293,76 @@ main {
 
 .animate-dropdown {
   animation: dropdown-in 0.15s ease-out both;
+}
+
+/* Fluid UI Design & Micro-Interactions */
+button:not(:disabled),
+a[href],
+input[type="button"],
+input[type="submit"] {
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.18s ease, border-color 0.18s ease;
+}
+
+button:not(:disabled):active,
+a[href]:active {
+  transform: scale(0.975);
+}
+
+.fluid-card {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+}
+
+.fluid-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 28px -6px rgba(6, 95, 70, 0.1), 0 8px 12px -6px rgba(6, 95, 70, 0.05);
+}
+
+.fluid-tap {
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+
+.fluid-tap:active {
+  transform: scale(0.97);
+}
+
+.glass-pill {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+/* Subtle shimmer animation for highlights */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.animate-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.12) 20%,
+    rgba(255, 255, 255, 0.25) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: shimmer 3s infinite;
+}
+
+.glass-glow-card {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-glow-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 32px -8px rgba(6, 95, 70, 0.12), 0 0 0 1px rgba(74, 222, 128, 0.25);
 }
