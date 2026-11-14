@@ -66,6 +66,42 @@ export function setCachedKeys(keys: CachedKeys): void {
   localStorage.setItem(STORAGE_KEY_KEYS, JSON.stringify(keys));
 }
 
+const STORAGE_KEY_QR = 'smartbhumi_cached_qr_v1';
+
+interface CachedQR {
+  deedNumber: string;
+  qrString: string;
+  cachedAt: string;
+}
+
+export function getCachedQR(deedNumber: string): CachedQR | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_QR);
+    if (!raw) return null;
+    const all = JSON.parse(raw) as Record<string, CachedQR>;
+    return all[deedNumber] || null;
+  } catch {
+    return null;
+  }
+}
+
+export function setCachedQR(deedNumber: string, qrString: string): void {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_QR);
+    const all = raw ? (JSON.parse(raw) as Record<string, CachedQR>) : {};
+    // Keep only the most recent few QRs — payloads are ~550-1000 bytes each
+    const entries = Object.entries(all)
+      .sort((a, b) => (a[1].cachedAt < b[1].cachedAt ? 1 : -1))
+      .slice(0, 9);
+    const trimmed: Record<string, CachedQR> = {};
+    for (const [k, v] of entries) trimmed[k] = v;
+    trimmed[deedNumber] = { deedNumber, qrString, cachedAt: new Date().toISOString() };
+    localStorage.setItem(STORAGE_KEY_QR, JSON.stringify(trimmed));
+  } catch {
+    // localStorage full or unavailable — cache is best-effort
+  }
+}
+
 /**
  * Base HTTP fetch wrapper with Simulated Airplane Mode interceptor
  * and demo role header injection.
@@ -146,8 +182,32 @@ export async function fetchLatestSTH() {
   return data;
 }
 
-export async function fetchDeedQR(deedIdOrNumber: string) {
-  return apiFetch(`/api/deeds/${encodeURIComponent(deedIdOrNumber)}/qr`);
+export async function fetchDeedQR(deedIdOrNumber: string): Promise<{ qrString: string; byteLength?: number; fromCache?: boolean }> {
+  const data = await apiFetch(`/api/deeds/${encodeURIComponent(deedIdOrNumber)}/qr`);
+  if (data?.qrString) setCachedQR(deedIdOrNumber, data.qrString);
+  return data;
+}
+
+/**
+ * Demo sample loader with offline fallback: in airplane mode the network is
+ * blocked, so reuse the QR cached from the last online fetch. This models the
+ * real scenario — the printed deed QR in the citizen's hand needs no network.
+ * The cryptographic verification itself always runs 100% offline.
+ */
+export async function fetchDeedQROrCached(deedIdOrNumber: string): Promise<{ qrString: string; byteLength?: number; fromCache?: boolean }> {
+  if (isAirplaneMode()) {
+    const cached = getCachedQR(deedIdOrNumber);
+    if (cached) return { qrString: cached.qrString, fromCache: true };
+  }
+  try {
+    return await fetchDeedQR(deedIdOrNumber);
+  } catch (err) {
+    if (isAirplaneMode()) {
+      const cached = getCachedQR(deedIdOrNumber);
+      if (cached) return { qrString: cached.qrString, fromCache: true };
+    }
+    throw err;
+  }
 }
 
 export async function runRedTeamSimulation(scenario: 'paper_tamper' | 'db_tamper' | 'key_compromise') {

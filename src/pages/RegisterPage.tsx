@@ -141,7 +141,7 @@ export const RegisterPage: React.FC = () => {
             <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
               {isBn ? 'দলিল রেজিস্ট্রি ও হস্তান্তর' : 'Deed Registration & Area Transfer'}
             </h1>
-            <Badge variant="success">Atomic Accounting</Badge>
+            <Badge variant="success">{isBn ? 'স্বয়ংক্রিয় নিখুঁত হিসাব' : 'Atomic Accounting'}</Badge>
           </div>
           <p className="text-sm text-slate-600 mt-1">
             {isBn
@@ -173,7 +173,7 @@ export const RegisterPage: React.FC = () => {
                 >
                   {shares.map((s) => (
                     <option key={s.id} value={s.id}>
-                      {s.dag_number} ({s.mouza_code}) — {isBn ? 'অবশিষ্ট:' : 'Available:'}{' '}
+                      {s.dag_number} ({s.mouza_code}) | {isBn ? 'অবশিষ্ট:' : 'Available:'}{' '}
                       {toBanglaDigits(s.available_shotok ?? 0, i18n.language)} {isBn ? 'শতক' : 'Shotok'}
                     </option>
                   ))}

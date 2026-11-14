@@ -34,7 +34,7 @@ export const JudgeDemoBar: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-16 lg:bottom-4 right-3 z-50 select-none">
+    <div id="judge-demo-bar" className="fixed bottom-20 lg:bottom-4 right-3 z-50 select-none print:hidden judge-demo-bar">
       <div className="bg-slate-900 text-white rounded-xl shadow-xl border border-slate-700 overflow-hidden transition-all text-xs">
         {/* Toggle Header */}
         <div
@@ -43,8 +43,8 @@ export const JudgeDemoBar: React.FC = () => {
         >
           <div className="flex items-center gap-1.5 font-bold text-emerald-400">
             <Zap className="w-4 h-4 text-amber-400 animate-pulse" />
-            <span>Judge Demo Bar</span>
-            <span className="text-[10px] text-slate-400 font-normal">3-Min Pitch</span>
+            <span>{isBn ? 'বিচারক ডেমো বার' : 'Judge Demo Bar'}</span>
+            <span className="text-[10px] text-slate-400 font-normal">{isBn ? '৩-মিনিট পিচ' : '3-Min Pitch'}</span>
           </div>
           {expanded ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronUp className="w-4 h-4 text-slate-400" />}
         </div>
@@ -53,7 +53,7 @@ export const JudgeDemoBar: React.FC = () => {
         {expanded && (
           <div className="p-3 space-y-2 bg-slate-900 w-64">
             <p className="text-[11px] text-slate-300 font-medium">
-              {isBn ? '৩-মিনিটের জাজ ডেমো পাথ:' : '3-Minute Presentation Acts:'}
+              {isBn ? '৩-মিনিটের বিচারক ডেমো পাথ:' : '3-Minute Presentation Acts:'}
             </p>
 
             <button
@@ -63,8 +63,12 @@ export const JudgeDemoBar: React.FC = () => {
               <div className="flex items-center gap-2">
                 <Play className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                 <div>
-                  <span className="font-semibold block text-slate-200">Act 1: Area Accounting</span>
-                  <span className="text-[10px] text-slate-400 block">Concurrency 20-worker test</span>
+                  <span className="font-semibold block text-slate-200">
+                    {isBn ? 'পর্ব ১: এরিয়া অ্যাকাউন্টিং' : 'Act 1: Area Accounting'}
+                  </span>
+                  <span className="text-[10px] text-slate-400 block">
+                    {isBn ? 'কনকারেন্সি ২০-ওয়ার্কার পরীক্ষা' : 'Concurrency 20-worker test'}
+                  </span>
                 </div>
               </div>
             </button>
@@ -76,8 +80,12 @@ export const JudgeDemoBar: React.FC = () => {
               <div className="flex items-center gap-2">
                 <Play className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                 <div>
-                  <span className="font-semibold block text-slate-200">Act 2: Offline QR & Tamper</span>
-                  <span className="text-[10px] text-slate-400 block">Airplane mode & paper diff</span>
+                  <span className="font-semibold block text-slate-200">
+                    {isBn ? 'পর্ব ২: অফলাইন কিউআর ও ট্যাম্পার' : 'Act 2: Offline QR & Tamper'}
+                  </span>
+                  <span className="text-[10px] text-slate-400 block">
+                    {isBn ? 'বিমান মোড ও কাগজ ডিফ' : 'Airplane mode & paper diff'}
+                  </span>
                 </div>
               </div>
             </button>
@@ -89,8 +97,12 @@ export const JudgeDemoBar: React.FC = () => {
               <div className="flex items-center gap-2">
                 <Play className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                 <div>
-                  <span className="font-semibold block text-slate-200">Act 3: AC Land & PQC Block</span>
-                  <span className="text-[10px] text-slate-400 block">e-Mutation & ML-DSA defense</span>
+                  <span className="font-semibold block text-slate-200">
+                    {isBn ? 'পর্ব ৩: এসি ল্যান্ড ও পিকিউসি ব্লক' : 'Act 3: AC Land & PQC Block'}
+                  </span>
+                  <span className="text-[10px] text-slate-400 block">
+                    {isBn ? 'ই-নামজারি ও এমএল-ডিএসএ প্রতিরক্ষা' : 'e-Mutation & ML-DSA defense'}
+                  </span>
                 </div>
               </div>
             </button>
@@ -102,7 +114,7 @@ export const JudgeDemoBar: React.FC = () => {
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-950 hover:bg-red-900 text-red-200 border border-red-800 font-semibold text-[11px] disabled:opacity-50"
               >
                 <RotateCcw className={`w-3.5 h-3.5 ${resetting ? 'animate-spin' : ''}`} />
-                <span>{resetting ? 'রিসেট হচ্ছে...' : 'Quick DB Reset (<100ms)'}</span>
+                <span>{resetting ? (isBn ? 'রিসেট হচ্ছে...' : 'Resetting...') : (isBn ? 'দ্রুত ডিবি রিসেট (<১০০ms)' : 'Quick DB Reset (<100ms)')}</span>
               </button>
               {resetSuccess && (
                 <span className="flex items-center gap-1 text-[10px] text-emerald-400 font-mono">
@@ -117,4 +129,3 @@ export const JudgeDemoBar: React.FC = () => {
     </div>
   );
 };
-

@@ -6,7 +6,7 @@
 [![Legacy Tests](https://img.shields.io/badge/Legacy%20Tests-8%2F8%20Passed-brightgreen)](file:///tests/verification.test.mjs)
 [![Post-Quantum Security](https://img.shields.io/badge/PQC-NIST%20ML--DSA--65%20(FIPS%20204)-065f46)](file:///scripts/benchPqc.ts)
 [![RFC 9162 Merkle Log](https://img.shields.io/badge/Transparency%20Log-RFC%209162%20Compliant-blue)](file:///server/logManager.ts)
-[![QR Budget](https://img.shields.io/badge/Offline%20QR-549%20Bytes%20(<700B)-blueviolet)](file:///src/crypto/offlineVerifier.ts)
+[![QR Budget](https://img.shields.io/badge/Offline%20QR-556%20Bytes%20(up%20to%20~1KB%20at%2063%20leaves)-blueviolet)](file:///src/crypto/offlineVerifier.ts)
 [![License](https://img.shields.io/badge/License-MIT-slate)](LICENSE)
 
 > [!IMPORTANT]
@@ -17,7 +17,7 @@
 ## 1. System Overview & Architecture
 
 Between Round 1 and the Final Round, SmartBhumi underwent a complete architectural rebuild to solve the core triad of land administration challenges:
-- **Problem P2 (Deed & Ownership Verification):** Solved via **RFC 9162 Merkle transparency logs**, canonical JSON field normalization (rescan-tolerant), and a compact **549-byte offline-verifiable QR code** running on any smartphone with zero cellular connectivity.
+- **Problem P2 (Deed & Ownership Verification):** Solved via **RFC 9162 Merkle transparency logs**, canonical JSON field normalization (rescan-tolerant), and a compact **offline-verifiable QR code** (556 B in the 2-leaf demo state; grows with log depth as shown in §9) running on any smartphone with zero cellular connectivity.
 - **Problem P3 (Double-Sale & Over-Allocation Prevention):** Solved via **server-enforced 64-bit integer micro-shotok accounting** (`1 shotok = 1,000,000 micro-shotok`) inside atomic SQLite `BEGIN IMMEDIATE` transactions with database-level `CHECK(available >= 0)` constraints.
 - **Problem P4 (Registry to e-Mutation Pipeline):** Solved via an automated sealing bridge that locks transacted area under `mutation_pending`, surfaces cases to the **Assistant Commissioner (Land)** queue, and enables 2-click atomic approval with automatic Khatian generation.
 
@@ -60,7 +60,7 @@ flowchart TD
 | **Area Accounting** | Floating-point numbers in UI state | 64-bit Integer Micro-Shotok (`1 shotok = 1,000,000`) | Eliminates floating-point rounding errors and phantom land |
 | **Concurrency & Double-Sale** | No locks; vulnerable to race conditions | `BEGIN IMMEDIATE` + DB `CHECK(available >= 0)` | **20 concurrent sales stress-test:** exactly 1 succeeds, 19 blocked |
 | **Document Integrity** | Raw file SHA-256 (breaks on rescan/compression) | Canonical field hashing (NFC Unicode, sorted keys) | Rescan-tolerant, survives PDF compression and lighting variations |
-| **QR Code Verification** | Unsigned web link to `/verify/:id` (requires internet) | Compact (<700B) self-contained payload with Merkle proof | **100% offline verifiable** in airplane mode on any mobile device |
+| **QR Code Verification** | Unsigned web link to `/verify/:id` (requires internet) | Compact self-contained payload with Merkle proof (556 B at 2 leaves, ~1.04 KB at 63) | **100% offline verifiable** in airplane mode on any mobile device |
 | **Transparency Log** | None | RFC 9162 Merkle log (`0x00` leaf, `0x01` node) | Tamper-evident append-only ledger; pinpoints corrupt leaf index |
 | **Digital Signatures** | None | **Dual Ed25519 + NIST ML-DSA-65 (Post-Quantum)** | Fail-closed security; classical + lattice quantum future-proofing |
 | **Registry $\to$ e-Mutation** | None | Automated sealing pipeline with AC Land 2-click approve | Direct bridge solving Hackathon Problem P4 |
@@ -130,7 +130,7 @@ Land ownership records in Bangladesh endure for decades. Classical signatures (R
 1. **What It Claims:**
    - Dual signatures provide defense-in-depth: an attacker with a quantum computer capable of breaking classical discrete logarithms cannot forge a Signed Tree Head because ML-DSA-65 remains mathematically intractable.
    - The system is **fail-closed**: if the classical signature passes but the ML-DSA-65 signature fails, the STH is rejected with status `BLOCKED`.
-   - The QR code remains ultra-compact (**549 bytes**, under the 700-byte printable budget) by embedding the compact 64-byte Ed25519 signature and Merkle inclusion path, while referencing the dual-signed STH epoch.
+   - The QR code stays compact by embedding the compact 64-byte Ed25519 signature and Merkle inclusion path, while referencing the dual-signed STH epoch. In the 2-leaf demo state it is **556 bytes**; see §9 for how it scales with log depth (the original <700 B printable budget holds only up to ~4 leaves — still scannable at ~1.0 KB / QR version ~10–12 for a 63-leaf log).
 2. **What It Does NOT Claim:**
    - We make no claims of absolute invulnerability or impossible cryptographic perfection.
    - We do not claim that physical documents cannot be lost or damaged.
@@ -167,10 +167,11 @@ The web application features a persistent **Judge Demo Bar** pinned to the top o
 
 ### ⏱️ Act 2: Offline Verifiable QR & Paper Tampering (Problem P2) — 0:50 to 1:50
 1. Click **"Act 2: Offline Tamper (P2)"** in the Judge Demo Bar.
-2. Toggle **"Airplane Mode"** in the top navbar (proves 100% offline local execution).
-3. Click **"নমুনা ১: বৈধ দলিল"** $\to$ Card turns **EMERALD GREEN: VERIFIED**.
-4. Click **"নমুনা ২: জাল দলিল"** $\to$ Card turns **RED: TAMPERED**; token-level diff flags the paper's forged `25.00` shotok claim against the cryptographic QR's `15.00` record.
-5. Navigate to `/print-deeds` and scan the printed A4 deed QR with a mobile phone.
+2. While still online, click **"নমুনা ১: বৈধ দলিল"** once — this pins the registry public key and caches the deed QR on the device (the same way a citizen's phone first syncs at the registry office).
+3. Toggle **"Airplane Mode"** in the top navbar (proves 100% offline local execution).
+4. Click **"নমুনা ১: বৈধ দলিল"** $\to$ Card turns **EMERALD GREEN: VERIFIED** (QR served from the offline cache; all crypto runs locally).
+5. Click **"নমুনা ২: জাল দলিল"** $\to$ Card turns **RED: TAMPERED**; token-level diff flags the paper's forged `25.00` shotok claim against the cryptographic QR's `15.00` record.
+6. Navigate to `/print-deeds` and scan the printed A4 deed QR with a mobile phone.
 
 ### ⏱️ Act 3: e-Mutation Handoff & Red-Team Post-Quantum Security (P4) — 1:50 to 2:40
 1. Click **"Act 3: e-Mutation & PQC (P4)"** in the Judge Demo Bar.
@@ -208,3 +209,15 @@ Click the amber **"রিসেট (<১০০ms)"** button in the Judge Demo Ba
 - **REST API Specifications:** [docs/API.md](docs/API.md)
 - **Changelog & Stage Updates:** [UPDATES_AND_CHANGES.md](UPDATES_AND_CHANGES.md)
 - **Legal Citations Catalog:** [src/shared/citations.ts](src/shared/citations.ts)
+
+---
+
+## 9. Known Limitations (Measured, Not Hidden)
+
+Honest engineering scope statements, verified by independent adversarial audit:
+
+1. **QR payload growth with log depth.** Each Merkle proof step adds ~96 B, so the offline QR grows with log size. Measured on this build (including the 7-byte signature-bound `sz` tree-size field): **556 B** at 2 leaves, 652 B at 3–4, 748 B at 5–8, 941 B at 17–32, **1037 B at 63 leaves**. The early "<700 B" claim only holds for tiny trees (up to 4 leaves); at 63 leaves the QR is ~1.0 KB (QR version ~10–12), which still scans reliably from paper. A binary/CBOR encoding is the natural next step if the log grows beyond a few hundred leaves.
+2. **Authority keys on disk.** The Ed25519 + ML-DSA-65 authority keys are generated once and persisted to `data/authority_keys.json` (mode 0600, git-ignored) so QRs keep verifying across restarts. This is prototype-appropriate: a production deployment would hold them in an HSM or secret manager, never on the web server's disk.
+3. **Key pinning on verifier devices.** The browser pins the registry public key from `/api/sth/latest` on first online visit and fails closed (refuses to verify) if no pinned key exists. It cannot detect a compromise of the registry server itself — that requires an independent witness/log-gossip mechanism, which is out of scope for this prototype.
+
+Previously listed here and **fixed in this build**: the unsigned `idx` leaf-index field. The STH signature now covers the tree size (`sz` in the QR payload), and the offline verifier derives the required audit-path shape from `(idx, sz)` — the root-to-leaf path is unique per index at a fixed tree size — so a shifted leaf index no longer verifies (adversarial cases A7/A7b, 22/22 blocked). Cost: +7 B per QR.

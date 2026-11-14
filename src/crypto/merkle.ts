@@ -151,6 +151,60 @@ export function verifyInclusion(
 }
 
 /**
+ * Expected audit-path direction sequence for `index` in a tree of `treeSize` leaves.
+ *
+ * Mirrors the inclusionProof() recursion exactly: reading the returned sequence
+ * gives the root-to-leaf path, which is UNIQUE per leaf index at a fixed tree size.
+ * This is what lets the verifier bind a claimed leaf index to the signed root:
+ * a proof shape that does not match the claimed index cannot recompute the root.
+ */
+export function expectedProofDirections(index: number, treeSize: number): Array<'left' | 'right'> {
+  if (treeSize < 1) throw new Error(`treeSize must be >= 1, got ${treeSize}`);
+  if (index < 0 || index >= treeSize) throw new Error(`Index ${index} out of range [0, ${treeSize})`);
+  if (treeSize === 1) return [];
+  const k = largestPowerOf2LessThan(treeSize);
+  if (index < k) {
+    return [...expectedProofDirections(index, k), 'right'];
+  }
+  return [...expectedProofDirections(index - k, treeSize - k), 'left'];
+}
+
+/**
+ * Verify an inclusion proof with the leaf index BOUND to the result.
+ *
+ * Unlike verifyInclusion() (which trusts the direction bits embedded in the
+ * proof), this derives the required path from (index, treeSize) and rejects
+ * any proof whose shape disagrees. A forged leaf index then forces a different
+ * concatenation order and the root check fails — the index no longer rides
+ * outside the signature. treeSize itself must be authenticated (it is part of
+ * the signed STH message).
+ */
+export function verifyInclusionIndexed(
+  leafHashHex: string,
+  index: number,
+  treeSize: number,
+  proof: ProofStep[],
+  rootHashHex: string
+): boolean {
+  if (!Number.isInteger(index) || !Number.isInteger(treeSize)) return false; // fail closed
+  let expected: Array<'left' | 'right'>;
+  try {
+    expected = expectedProofDirections(index, treeSize);
+  } catch {
+    return false; // malformed index/tree size -> fail closed
+  }
+  if (proof.length !== expected.length) return false;
+
+  let current = hexToBytes(leafHashHex);
+  for (let i = 0; i < expected.length; i++) {
+    if (proof[i].direction !== expected[i]) return false;
+    const sibling = hexToBytes(proof[i].hash);
+    current = expected[i] === 'right' ? nodeHash(current, sibling) : nodeHash(sibling, current);
+  }
+  return bytesToHex(current) === rootHashHex;
+}
+
+/**
  * Largest power of 2 that is strictly less than n.
  * Example: largestPowerOf2LessThan(5) = 4
  *          largestPowerOf2LessThan(8) = 4

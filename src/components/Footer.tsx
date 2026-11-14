@@ -9,7 +9,7 @@ export const Footer: React.FC = () => {
   const isBn = i18n.language === 'bn';
 
   return (
-    <footer className="bg-gradient-to-b from-[#124b27] via-[#0e3c1f] to-[#0a2e17] text-emerald-100/85 text-xs border-t border-emerald-700/70 mt-0 relative overflow-hidden shadow-inner">
+    <footer className="print:hidden bg-gradient-to-b from-[#124b27] via-[#0e3c1f] to-[#0a2e17] text-emerald-100/85 text-xs border-t border-emerald-700/70 mt-0 relative overflow-hidden shadow-inner">
       {/* Decorative top border accent */}
       <div className="h-1 bg-gradient-to-r from-emerald-600 via-green-400 to-emerald-500 w-full" />
 
@@ -18,12 +18,18 @@ export const Footer: React.FC = () => {
           {/* Col 1: Official Brand & Ministry */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-white shadow-md border border-emerald-500/30 flex items-center justify-center p-1">
-                <img src="/logo.png" alt="LandProof Logo" className="w-full h-full object-contain" />
-              </div>
+              <img
+                src="/logo.svg"
+                alt="SmartBhumi Logo"
+                className="w-9 h-9 object-contain shrink-0"
+              />
               <div>
                 <span className="text-xl font-bold text-white tracking-tight font-sans">
-                  Smart<span className="text-emerald-300">Bhumi</span>
+                  {isBn ? (
+                    <>স্মার্ট<span className="text-emerald-300">ভূমি</span></>
+                  ) : (
+                    <>Smart<span className="text-emerald-300">Bhumi</span></>
+                  )}
                 </span>
                 <span className="block text-[11px] text-emerald-200/90 font-medium leading-none mt-0.5">
                   {isBn ? 'ভূমি মন্ত্রণালয়, বাংলাদেশ সরকার' : 'Ministry of Land, Govt of Bangladesh'}
@@ -168,7 +174,7 @@ export const Footer: React.FC = () => {
             <span>•</span>
             <span className="hover:text-white transition cursor-pointer">{t('footer.terms')}</span>
             <span>•</span>
-            <span className="text-emerald-300 font-medium">Smart Land Bangladesh</span>
+            <span className="text-emerald-300 font-medium">{isBn ? 'স্মার্ট ভূমি বাংলাদেশ' : 'Smart Land Bangladesh'}</span>
           </div>
         </div>
       </div>

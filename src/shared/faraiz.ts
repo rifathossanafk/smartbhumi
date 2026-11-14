@@ -210,8 +210,8 @@ export function calculateFaraiz(input: FaraizInput): FaraizResult {
     shares,
     totalDistributed: distributed,
     remainder: total - distributed,
-    disclaimer: 'ILLUSTRATIVE ONLY — This is a simplified calculation covering only spouse, parents, sons, and daughters. It does not handle awl, radd, Dayabhaga, or complex cases. Not legal advice. Consult a qualified lawyer.',
-    disclaimerBn: 'শুধুমাত্র উদাহরণমূলক — এটি একটি সরলীকৃত হিসাব যা শুধুমাত্র স্ত্রী/স্বামী, পিতামাতা, পুত্র ও কন্যাকে অন্তর্ভুক্ত করে। আউল, রাদ্দ, দায়ভাগ বা জটিল ক্ষেত্রে প্রযোজ্য নয়। আইনি পরামর্শ নয়। যোগ্য আইনজীবীর সাথে পরামর্শ করুন।',
+    disclaimer: 'ILLUSTRATIVE ONLY: This is a simplified calculation covering only spouse, parents, sons, and daughters. It does not handle awl, radd, Dayabhaga, or complex cases. Not legal advice. Consult a qualified lawyer.',
+    disclaimerBn: 'শুধুমাত্র উদাহরণমূলক: এটি একটি সরলীকৃত হিসাব যা শুধুমাত্র স্ত্রী/স্বামী, পিতামাতা, পুত্র ও কন্যাকে অন্তর্ভুক্ত করে। আউল, রাদ্দ, দায়ভাগ বা জটিল ক্ষেত্রে প্রযোজ্য নয়। আইনি পরামর্শ নয়। যোগ্য আইনজীবীর সাথে পরামর্শ করুন।',
   };
 }
 

@@ -168,7 +168,7 @@ export function simulateKeyCompromise(): RedTeamSimulationResult {
   // We test two cases:
   // Case A: Attacker signs with the genuine Ed25519 public key (as if leaked)
   // Let's use the real Ed25519 key to sign the fraudulent root to simulate full Ed25519 leak!
-  const msgBytes = formatSTHMessageBytes(epoch, fraudulentRoot, timestamp);
+  const msgBytes = formatSTHMessageBytes(epoch, fraudulentRoot, timestamp, latestSTH.treeSize);
 
   // Let's sign with genuine Ed25519 key to simulate key leakage
   const genuineEdPriv = (globalThis as any).__smartbhumi_ed_priv;
@@ -195,7 +195,7 @@ export function simulateKeyCompromise(): RedTeamSimulationResult {
     mlDsa65: pubKeys.mlDsa65,
   };
 
-  const verification = verifySTHSignatures(epoch, fraudulentRoot, timestamp, envelope, testPubKeys);
+  const verification = verifySTHSignatures(epoch, fraudulentRoot, timestamp, latestSTH.treeSize, envelope, testPubKeys);
 
   return {
     scenario: 'key_compromise',

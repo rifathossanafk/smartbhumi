@@ -7,7 +7,9 @@
  * 1. Decode the compact QR string (base64url or compact JSON).
  * 2. Reconstruct the canonical deed claims.
  * 3. Recompute the Merkle leaf hash: SHA-256(0x00 || canonicalJSON).
- * 4. Walk the inclusion audit path using RFC 9162 node prefix (0x01 || left || right).
+ * 4. Walk the inclusion audit path using RFC 9162 node prefix (0x01 || left || right),
+ *    with the leaf index bound to the walk: the required proof shape is derived
+ *    from (idx, sz) and sz is covered by the STH signature.
  * 5. Check if the computed root equals the root in the Signed Tree Head (STH).
  * 6. Verify the digital signature of the STH using the trusted registry public key.
  * 7. Return verified claims along with strict claims discipline disclaimer:
@@ -15,7 +17,7 @@
  */
 
 import { canonicalize } from '../shared/canonicalize.js';
-import { leafHashFromString, verifyInclusion, type ProofStep } from './merkle.js';
+import { leafHashFromString, verifyInclusionIndexed, type ProofStep } from './merkle.js';
 import { ed25519 } from '@noble/curves/ed25519';
 import { sha256 } from '@noble/hashes/sha256';
 import { hexToBytes } from '@noble/hashes/utils';
@@ -37,6 +39,7 @@ export interface QRPayload {
   alg: string;            // Algorithm ID ('ed25519')
   ep: number;             // STH Epoch
   idx: number;            // Leaf index in Merkle log
+  sz: number;             // Tree size at signing time (covered by the STH signature)
   claims: CompactDeedClaims; // Compact claims
   proof: ProofStep[];     // Inclusion audit path
   root: string;           // Merkle root hash (hex)
@@ -155,17 +158,29 @@ export function verifyQROffline(
     // Step 2: Compute leaf hash with RFC 9162 0x00 leaf prefix
     const leafHash = leafHashFromString(canonicalClaims);
 
-    // Step 3: Walk audit path to recompute tree root
-    const proofMatches = verifyInclusion(leafHash, payload.proof, payload.root);
+    // Step 3: Walk audit path with the leaf index BOUND to the result.
+    // The required proof shape is derived from (idx, sz); sz is part of the
+    // signed STH message, so a shifted idx either disagrees with the proof
+    // shape or forces a root mismatch. The displayed leaf number can no
+    // longer be altered without invalidating the QR.
+    if (!Number.isInteger(payload.sz) || payload.sz < 1 ||
+        !Number.isInteger(payload.idx) || payload.idx < 0 || payload.idx >= payload.sz) {
+      return {
+        valid: false,
+        disclaimer: fallbackDisclaimer,
+        reason: 'QR payload has invalid leaf index (idx) or tree size (sz)',
+      };
+    }
+    const proofMatches = verifyInclusionIndexed(leafHash, payload.idx, payload.sz, payload.proof, payload.root);
     if (!proofMatches) {
       return {
         valid: false,
         disclaimer: fallbackDisclaimer,
-        reason: 'Merkle inclusion proof verification failed: leaf hash does not match root',
+        reason: 'Merkle inclusion proof verification failed: leaf hash, leaf index, or tree size does not match root',
       };
     }
 
-    // Step 4: If cached STH is provided, ensure roots and epochs match
+    // Step 4: If cached STH is provided, ensure roots, epochs and tree size match
     if (cachedSTH) {
       if (cachedSTH.epoch === payload.ep && cachedSTH.rootHash !== payload.root) {
         return {
@@ -174,14 +189,22 @@ export function verifyQROffline(
           reason: `STH root mismatch for epoch ${payload.ep}: cached ${cachedSTH.rootHash} vs QR ${payload.root}`,
         };
       }
+      if (cachedSTH.epoch === payload.ep && cachedSTH.treeSize !== payload.sz) {
+        return {
+          valid: false,
+          disclaimer: fallbackDisclaimer,
+          reason: `STH tree size mismatch for epoch ${payload.ep}: cached ${cachedSTH.treeSize} vs QR ${payload.sz}`,
+        };
+      }
     }
 
     // Step 5: Verify signature on STH payload
-    // Message signed is: DOMAIN_STH + canonicalize({ epoch, root, timestamp })
+    // Message signed is: DOMAIN_STH + canonicalize({ epoch, root, timestamp, treeSize })
     const sthMessage = `${DOMAIN_STH}${canonicalize({
       epoch: payload.ep,
       root: payload.root,
       timestamp: payload.ts,
+      treeSize: payload.sz,
     })}`;
     const sthBytes = new TextEncoder().encode(sthMessage);
 

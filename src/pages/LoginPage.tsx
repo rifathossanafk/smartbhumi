@@ -1,25 +1,24 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useStore, OFFICIAL_DEMO_USERS } from '../store/useStore';
 import { RoleBadge } from '../components/RoleBadge';
-import { BangladeshMapIcon } from '../components/BangladeshMapIcon';
 import type { UserRole } from '../types';
 import {
-  ShieldCheck,
   ArrowRight,
-  UserCheck,
-  KeyRound,
-  Mail,
   CreditCard,
   Lock,
   CheckCircle2,
   Sparkles,
   AlertCircle,
+  ShieldCheck,
+  QrCode,
+  FileCheck2,
+  Building2,
 } from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useStore();
@@ -65,25 +64,10 @@ export const LoginPage: React.FC = () => {
   ];
 
   return (
-    <div className="container mx-auto max-w-5xl px-4 py-12 space-y-8">
-      {/* Page Title */}
-      <div className="text-center space-y-3">
-        <div className="w-16 h-16 rounded-2xl bg-white border border-emerald-100 shadow-md shadow-emerald-900/10 flex items-center justify-center mx-auto p-2">
-          <img src="/logo.png" alt="LandProof Logo" className="w-full h-full object-contain" />
-        </div>
-        <h1 className="text-3xl font-extrabold text-slate-900 font-sans tracking-tight">
-          {isBn ? 'স্মার্ট ভূমি পোর্টাল লগইন' : 'Smart Land Portal Sign In'}
-        </h1>
-        <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto">
-          {isBn
-            ? 'নাগরিক ও ভূমি কর্মকর্তাদের জন্য গণপ্রজাতন্ত্রী বাংলাদেশ সরকারের প্রাতিষ্ঠানিক ডিজিটাল অথেনটিকেশন পোর্টাল।'
-            : 'Official Ministry of Land Authentication Portal for citizens, land revenue officers, and reviewers.'}
-        </p>
-      </div>
-
-      {/* Redirect Notice if user attempted to access protected route without login */}
+    <div className="container mx-auto max-w-5xl px-4 py-8 sm:py-12 space-y-6">
+      {/* Notice if user was redirected from a protected route */}
       {redirectPath && (
-        <div className="max-w-2xl mx-auto p-4 rounded-2xl bg-amber-50 border border-amber-300 text-amber-900 text-xs sm:text-sm flex items-center gap-3 shadow-sm animate-fade-in">
+        <div className="max-w-3xl mx-auto p-4 rounded-2xl bg-amber-50 border border-amber-300 text-amber-900 text-xs sm:text-sm flex items-center gap-3 shadow-xs animate-fade-in">
           <AlertCircle className="w-5 h-5 text-amber-700 shrink-0" />
           <div>
             <div className="font-bold">
@@ -98,93 +82,105 @@ export const LoginPage: React.FC = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left Column: Interactive 4-Persona Credentials Cards */}
-        <div className="lg:col-span-7 bg-white rounded-3xl border border-slate-200 p-6 sm:p-7 shadow-sm space-y-5">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
-            <div className="space-y-0.5">
-              <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-emerald-700" />
-                <span>{isBn ? 'অনুমোদিত প্রোফাইল (১-ক্লিক প্রবেশ)' : 'Authorized Persona Cards (1-Click Login)'}</span>
-              </h2>
-              <p className="text-xs text-slate-500">
-                {isBn ? 'মূল্যায়ন ও সরাসরি পরীক্ষার জন্য যেকোনো কর্মকর্তা বা নাগরিক প্রোফাইল বেছে নিন' : 'Select any official profile for direct evaluation and testing'}
+      {/* Main Split Authentication Card */}
+      <div className="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden grid grid-cols-1 md:grid-cols-12">
+        {/* Left Panel: Government Green Identity Showcase */}
+        <div className="md:col-span-5 bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900 text-white p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden">
+          {/* Subtle background glow */}
+          <div className="absolute -top-12 -left-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
+          <div className="absolute -bottom-12 -right-12 w-48 h-48 bg-teal-400/10 rounded-full blur-2xl pointer-events-none" />
+
+          <div className="space-y-6 relative z-10">
+            {/* Pure SVG map silhouette - Naked logo without enclosing box/border */}
+            <div className="flex items-center gap-3">
+              <img
+                src="/logo.svg"
+                alt="SmartBhumi Bangladesh Map Logo"
+                className="w-14 h-14 sm:w-16 sm:h-16 object-contain shrink-0"
+              />
+              <div>
+                <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white font-sans">
+                  {isBn ? 'স্মার্টভূমি' : 'SmartBhumi'}
+                </h2>
+                <p className="text-[11px] text-emerald-200 font-medium">
+                  {isBn ? 'গণপ্রজাতন্ত্রী বাংলাদেশ সরকার' : 'Government of Bangladesh'}
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-base sm:text-lg font-bold text-emerald-100 leading-snug">
+                {isBn
+                  ? 'জমির দলিল যাচাই, স্বয়ংক্রিয় ই-নামজারি ও জালিয়াতি প্রতিরোধ'
+                  : 'Land Deed Verification, Automated e-Mutation & Fraud Prevention'}
+              </h3>
+              <p className="text-xs text-emerald-200/80 leading-relaxed">
+                {isBn
+                  ? 'নাগরিক ও ভূমি কর্মকর্তাদের জন্য জাতীয় ক্রিপ্টোগ্রাফিক অথেনটিকেশন পোর্টাল।'
+                  : 'Unified cryptographic land authority portal for citizens and revenue officers.'}
               </p>
             </div>
-            <span className="text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 self-start sm:self-auto shrink-0">
-              {isBn ? '৪টি ভূমিকা' : '4 Roles'}
-            </span>
+
+            {/* Feature Highlights with icons */}
+            <div className="space-y-2.5 pt-2 border-t border-emerald-700/60">
+              <div className="flex items-start gap-2.5 text-xs text-emerald-100">
+                <CheckCircle2 className="w-4 h-4 text-emerald-300 shrink-0 mt-0.5" />
+                <span>
+                  {isBn
+                    ? 'প্রতিটি দলিল ও নামজারি আরএফসি ৯১৬২ মার্কেল লেজারে সুরক্ষিত'
+                    : 'Every deed cryptographically sealed on RFC 9162 Merkle log'}
+                </span>
+              </div>
+              <div className="flex items-start gap-2.5 text-xs text-emerald-100">
+                <QrCode className="w-4 h-4 text-emerald-300 shrink-0 mt-0.5" />
+                <span>
+                  {isBn
+                    ? '১০০% অফলাইন কিউআর ও পোস্ট-কোয়ান্টাম এমএল-ডিএসএ সিল'
+                    : '100% offline QR verification & Post-Quantum ML-DSA seal'}
+                </span>
+              </div>
+              <div className="flex items-start gap-2.5 text-xs text-emerald-100">
+                <FileCheck2 className="w-4 h-4 text-emerald-300 shrink-0 mt-0.5" />
+                <span>
+                  {isBn
+                    ? 'মালিকের অখণ্ড সম্মতি ও খতিয়ান ব্যালেন্স ছাড়া হস্তান্তর অসম্ভব'
+                    : 'Zero unauthorized transfers via integer micro-shotok invariant'}
+                </span>
+              </div>
+              <div className="flex items-start gap-2.5 text-xs text-emerald-100">
+                <Building2 className="w-4 h-4 text-emerald-300 shrink-0 mt-0.5" />
+                <span>
+                  {isBn
+                    ? 'সাব-রেজিস্ট্রি থেকে এসিল্যান্ড সরাসরি ডিজিটাল পাইপলাইন'
+                    : 'Direct automated Sub-Registry to AC Land e-Mutation'}
+                </span>
+              </div>
+            </div>
           </div>
 
-          <div className="space-y-3">
-            {credentialCards.map((item) => {
-              const user = OFFICIAL_DEMO_USERS[item.role];
-
-              return (
-                <div
-                  key={item.role}
-                  className="rounded-2xl border border-slate-200/90 bg-slate-50/60 p-4 hover:border-emerald-500 hover:bg-emerald-50/20 hover:shadow-xs transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3.5"
-                >
-                  <div className="space-y-1 flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-sm font-bold text-slate-900">
-                        {isBn ? user.nameBn : user.nameEn}
-                      </span>
-                      <RoleBadge role={item.role} compact={true} />
-                    </div>
-
-                    <div className="text-xs font-semibold text-emerald-800">
-                      {isBn ? user.designationBn : user.designationEn}
-                    </div>
-
-                    <div className="text-[11px] text-slate-500 flex flex-wrap items-center gap-x-3 gap-y-0.5 pt-0.5 font-mono">
-                      <span>ID: {user.nidOrGovId}</span>
-                      <span className="text-slate-300">•</span>
-                      <span className="font-sans text-slate-600 truncate">{user.email}</span>
-                      <span className="text-slate-300 hidden md:inline">•</span>
-                      <span className="font-sans text-slate-500 truncate hidden md:inline">📍 {isBn ? user.jurisdictionBn : user.jurisdictionEn}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
-                    <button
-                      type="button"
-                      onClick={() => handleQuickFill(item.role)}
-                      className="text-[11px] font-semibold px-3 py-2 rounded-xl transition border border-slate-200 text-slate-700 hover:bg-white bg-slate-100 cursor-pointer"
-                      title={isBn ? 'ফর্ম পূরণ করুন' : 'Auto-fill form'}
-                    >
-                      {isBn ? 'ফর্মে পূরণ' : 'Auto-Fill'}
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => handleSelectRole(item.role)}
-                      className="text-white text-xs font-bold px-3.5 py-2 rounded-xl transition flex items-center justify-center gap-1.5 shadow-xs bg-emerald-700 hover:bg-emerald-800 cursor-pointer"
-                    >
-                      <span>{isBn ? '১-ক্লিকে প্রবেশ' : 'Sign In'}</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
+          {/* Footer note inside green panel */}
+          <div className="pt-6 mt-6 border-t border-emerald-700/40 text-[11px] text-emerald-300/80 flex items-center justify-between relative z-10">
+            <span>{isBn ? 'ভূমি মন্ত্রণালয় | নিরাপদ গেটওয়ে' : 'Ministry of Land | Secure'}</span>
+            <span className="font-mono text-[10px] bg-emerald-800/80 px-2 py-0.5 rounded text-emerald-200">
+              RFC 9162
+            </span>
           </div>
         </div>
 
-        {/* Right Column: Portal Sign In Form */}
-        <div className="lg:col-span-5 bg-white rounded-3xl border border-slate-200 p-6 sm:p-7 shadow-sm space-y-6">
-          <div className="space-y-0.5 pb-3 border-b border-slate-100">
-            <h3 className="text-lg font-bold text-slate-900">
+        {/* Right Panel: Clean Government Sign In Form */}
+        <div className="md:col-span-7 p-6 sm:p-8 space-y-5">
+          <div className="space-y-1 pb-3 border-b border-slate-100">
+            <h3 className="text-xl font-black text-slate-900 tracking-tight">
               {isBn ? 'পোর্টাল সাইন ইন' : 'Portal Sign In'}
             </h3>
             <p className="text-xs text-slate-500">
               {isBn
-                ? 'জাতীয় পরিচয়পত্র বা কর্মকর্তা সরকারি আইডি দিয়ে প্রবেশ করুন'
-                : 'Sign in with your National ID or Government Service Identifier'}
+                ? 'জাতীয় পরিচয়পত্র (NID) বা সরকারি কর্মকর্তা আইডি দিয়ে প্রবেশ করুন'
+                : 'Sign in with your National ID or Official Government Service ID'}
             </p>
           </div>
 
-          {/* Form Tabs */}
+          {/* Citizen vs Official Tab Switcher */}
           <div className="flex rounded-xl bg-slate-100 p-1 text-xs font-semibold">
             <button
               type="button"
@@ -192,9 +188,9 @@ export const LoginPage: React.FC = () => {
                 setActiveTab('citizen');
                 handleQuickFill('citizen');
               }}
-              className={`flex-1 py-2 text-center rounded-lg transition ${
+              className={`flex-1 py-2 text-center rounded-lg transition-all ${
                 activeTab === 'citizen'
-                  ? 'bg-white text-emerald-800 shadow-xs'
+                  ? 'bg-white text-emerald-800 shadow-xs font-bold'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -206,9 +202,9 @@ export const LoginPage: React.FC = () => {
                 setActiveTab('officer');
                 handleQuickFill('officer');
               }}
-              className={`flex-1 py-2 text-center rounded-lg transition ${
+              className={`flex-1 py-2 text-center rounded-lg transition-all ${
                 activeTab === 'officer'
-                  ? 'bg-white text-emerald-800 shadow-xs'
+                  ? 'bg-white text-emerald-800 shadow-xs font-bold'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -262,30 +258,109 @@ export const LoginPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="p-3 bg-emerald-50/50 rounded-xl border border-emerald-100 text-[11px] text-slate-600 space-y-1">
+            <div className="p-3 bg-emerald-50/60 rounded-xl border border-emerald-100 text-[11px] text-slate-600 space-y-1">
               <div className="flex items-center justify-between font-semibold">
-                <span className="text-slate-800">{isBn ? 'নির্বাচিত ভূমিকা:' : 'Active Role:'}</span>
+                <span className="text-slate-800">{isBn ? 'সক্রিয় ভূমিকা:' : 'Active Role:'}</span>
                 <RoleBadge role={selectedRole} />
               </div>
               <p className="text-[10px] text-slate-500">
                 {isBn
-                  ? 'লগইন করার পর স্বয়ংক্রিয়ভাবে সংশ্লিষ্ট ভূমিকার ড্যাশবোর্ড বা অনুরোধকৃত পেজে নিয়ে যাওয়া হবে।'
+                  ? 'লগইন করার পর স্বয়ংক্রিয়ভাবে আপনার ভূমিকা অনুযায়ী ড্যাশবোর্ডে প্রবেশ করবেন।'
                   : 'You will be redirected immediately to the role dashboard or requested page.'}
               </p>
             </div>
 
             <button
               type="submit"
-              className="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 text-xs shadow-md shadow-emerald-700/25"
+              className="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 text-xs shadow-md shadow-emerald-700/20 cursor-pointer"
             >
-              <span>{isBn ? 'ড্যাশবোর্ডে প্রবেশ করুন' : 'Enter Portal'}</span>
+              <span>{isBn ? 'ড্যাশবোর্ডে প্রবেশ করুন' : 'Sign In to Portal'}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
 
-          <div className="text-center pt-2 text-[11px] text-slate-400 border-t border-slate-100">
-            🔒 {isBn ? 'ভূমি মন্ত্রণালয় নিরাপদ সাইন-ইন গেটওয়ে' : 'Ministry of Land Secure Authentication Gateway'}
+          {/* Public services link without login */}
+          <div className="text-center pt-2 text-xs text-slate-500 border-t border-slate-100">
+            <span>{isBn ? 'লগইন ছাড়াই ব্যবহার করুন: ' : 'Public Access: '}</span>
+            <Link to="/verify" className="text-emerald-700 font-bold hover:underline">
+              {isBn ? 'দলিল যাচাই' : 'Deed Verify'}
+            </Link>
+            <span className="mx-2 text-slate-300">•</span>
+            <Link to="/search" className="text-emerald-700 font-bold hover:underline">
+              {isBn ? 'খতিয়ান অনুসন্ধান' : 'Search Record'}
+            </Link>
           </div>
+        </div>
+      </div>
+
+      {/* 1-Click Authorized Personas for Hackathon Judges */}
+      <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-7 shadow-sm space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+          <div className="space-y-0.5">
+            <h2 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-emerald-700" />
+              <span>{isBn ? 'অনুমোদিত প্রোফাইল (বিচারক ও পরীক্ষকদের জন্য ১-ক্লিক প্রবেশ)' : 'Authorized Profiles (1-Click Judge Access)'}</span>
+            </h2>
+            <p className="text-xs text-slate-500">
+              {isBn
+                ? 'সরাসরি মূল্যায়নের জন্য যেকোনো কর্মকর্তা বা নাগরিক প্রোফাইল বেছে নিন'
+                : 'Select any profile for instant live testing without typing passwords'}
+            </p>
+          </div>
+          <span className="text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 self-start sm:self-auto shrink-0">
+            {isBn ? '৪টি ভূমিকা' : '4 Roles'}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+          {credentialCards.map((item) => {
+            const user = OFFICIAL_DEMO_USERS[item.role];
+
+            return (
+              <div
+                key={item.role}
+                className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 hover:border-emerald-500 hover:bg-emerald-50/20 hover:shadow-xs transition-all flex flex-col justify-between gap-3"
+              >
+                <div className="space-y-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <span className="text-sm font-bold text-slate-900">
+                      {isBn ? user.nameBn : user.nameEn}
+                    </span>
+                    <RoleBadge role={item.role} compact={true} />
+                  </div>
+
+                  <div className="text-xs font-semibold text-emerald-800">
+                    {isBn ? user.designationBn : user.designationEn}
+                  </div>
+
+                  <div className="text-[11px] text-slate-500 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 pt-0.5 font-mono">
+                    <span>ID: {user.nidOrGovId}</span>
+                    <span className="text-slate-300">•</span>
+                    <span className="font-sans text-slate-600 truncate">{user.email}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-200/60">
+                  <button
+                    type="button"
+                    onClick={() => handleQuickFill(item.role)}
+                    className="text-[11px] font-semibold px-3 py-1.5 rounded-lg transition border border-slate-200 text-slate-700 hover:bg-white bg-slate-100 cursor-pointer"
+                  >
+                    {isBn ? 'ফর্ম পূরণ' : 'Auto-Fill'}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleSelectRole(item.role)}
+                    className="text-white text-xs font-bold px-3.5 py-1.5 rounded-lg transition flex items-center justify-center gap-1.5 shadow-xs bg-emerald-700 hover:bg-emerald-800 cursor-pointer"
+                  >
+                    <span>{isBn ? '১-ক্লিকে প্রবেশ' : 'Sign In'}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

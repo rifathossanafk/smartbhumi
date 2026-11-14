@@ -68,7 +68,8 @@ export const TOKENS = {
   },
   typography: {
     fonts: {
-      sans: "'Hind Siliguri', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+      sans: "'Noto Sans Bengali', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+      heading: "'Anek Bangla', 'Noto Sans Bengali', sans-serif",
       mono: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
     },
     sizes: {

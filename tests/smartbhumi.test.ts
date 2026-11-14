@@ -14,7 +14,7 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { getDb, resetDatabaseFast, seedDatabase } from '../server/db.js';
 import { toMicroShotok, fromMicroShotok, convertArea } from '../src/shared/units.js';
-import { computeRootHex, leafHashFromString, inclusionProof, verifyInclusion } from '../src/crypto/merkle.js';
+import { computeRootHex, leafHashFromString, inclusionProof, verifyInclusion, verifyInclusionIndexed } from '../src/crypto/merkle.js';
 import { initKeys, getPublicKeys, signSTH, verifySTHSignatures, ENABLE_PQC } from '../server/crypto.js';
 import { appendDeedToLog, generateDeedQRPayload, getLatestSTH } from '../server/logManager.js';
 import { verifyQROffline, decodeQRPayload, encodeQRPayload } from '../src/crypto/offlineVerifier.js';
@@ -160,6 +160,35 @@ describe('Stage A2: Signed Merkle Log & Offline QR Payload', () => {
     expect(verifyInclusion(leaves[3], tamperedProof, root)).toBe(false);
   });
 
+  it('binds the leaf index: verifyInclusionIndexed rejects shifted idx or tree size', () => {
+    const leaves = Array.from({ length: 5 }, (_, i) =>
+      leafHashFromString(canonicalize({ index: i, doc: `indexed-deed-${i}` }))
+    );
+    const leafBytes = leaves.map(l => hexToBytes(l));
+    const root = computeRootHex(leaves);
+
+    const proof = inclusionProof(leafBytes, 2);
+    // Correct (idx, sz): the shape derived from (2, 5) matches the proof
+    expect(verifyInclusionIndexed(leaves[2], 2, 5, proof, root)).toBe(true);
+
+    // Shifted leaf index: same proof can no longer walk to the signed root
+    expect(verifyInclusionIndexed(leaves[2], 3, 5, proof, root)).toBe(false);
+    expect(verifyInclusionIndexed(leaves[2], 1, 5, proof, root)).toBe(false);
+
+    // NOTE: at primitive level a coordinated (idx, sz) shift can still walk to
+    // the same root for unbalanced trees (shape prefix coincidence). That is
+    // exactly why treeSize is part of the SIGNED STH message: the forged sz
+    // breaks the signature. Covered end-to-end by adversarial cases A7/A7b.
+
+    // Direction bit flipped to match a shifted index: still fails on root
+    const flipped = proof.map(s => ({ ...s, direction: s.direction === 'left' ? 'right' as const : 'left' as const }));
+    expect(verifyInclusionIndexed(leaves[2], 2, 5, flipped, root)).toBe(false);
+
+    // Out-of-range or non-integer inputs fail closed
+    expect(verifyInclusionIndexed(leaves[2], 5, 5, proof, root)).toBe(false);
+    expect(verifyInclusionIndexed(leaves[2], 2.5, 5, proof, root)).toBe(false);
+  });
+
   it('generates QR payloads strictly under the 700-byte budget', () => {
     resetDatabaseFast();
     const db = getDb();
@@ -219,8 +248,8 @@ describe('Stages A3 & A4: Red-Team Tamper Demos & Dual Signatures', () => {
     const root = '11223344556677889900aabbccddeeff11223344556677889900aabbccddeeff';
     const ts = new Date().toISOString();
 
-    const env = signSTH(epoch, root, ts);
-    const verified = verifySTHSignatures(epoch, root, ts, env, pubKeys);
+    const env = signSTH(epoch, root, ts, 5);
+    const verified = verifySTHSignatures(epoch, root, ts, 5, env, pubKeys);
     expect(verified.valid).toBe(true);
     expect(verified.ed25519Valid).toBe(true);
     if (ENABLE_PQC) {
@@ -233,7 +262,7 @@ describe('Stages A3 & A4: Red-Team Tamper Demos & Dual Signatures', () => {
         algorithmId: 'ed25519',
         signatureEd25519: env.signatureEd25519,
       };
-      const downgradeCheck = verifySTHSignatures(epoch, root, ts, downgradedEnv, pubKeys);
+      const downgradeCheck = verifySTHSignatures(epoch, root, ts, 5, downgradedEnv, pubKeys);
       expect(downgradeCheck.valid).toBe(false);
       expect(downgradeCheck.reason).toContain('Downgrade attack detected');
     }

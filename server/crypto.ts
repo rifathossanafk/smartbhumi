@@ -12,6 +12,8 @@ import { ed25519 } from '@noble/curves/ed25519';
 import { sha256 } from '@noble/hashes/sha256';
 import { bytesToHex, hexToBytes } from '@noble/hashes/utils';
 import { canonicalize } from '../src/shared/canonicalize.js';
+import fs from 'node:fs';
+import path from 'node:path';
 
 // ML-DSA-65 from noble post-quantum
 let mlDsa65Module: any = null;
@@ -42,11 +44,82 @@ export interface STHSignatureEnvelope {
 
 let _keys: DualKeyPair | null = null;
 
+// Authority keys are persisted so QRs and STHs issued before a restart keep
+// verifying against the same trust anchor afterwards. In production these
+// keys would live in an HSM / secret manager, never in a plain JSON file.
+const KEY_FILE = path.join(process.cwd(), 'data', 'authority_keys.json');
+
+interface PersistedKeys {
+  ed25519: { publicKey: string; privateKey: string };
+  mlDsa65?: { publicKey: string; secretKey: string };
+}
+
+function saveKeysToDisk(keys: DualKeyPair): void {
+  const payload: PersistedKeys = {
+    ed25519: {
+      publicKey: bytesToHex(keys.ed25519.publicKey),
+      privateKey: bytesToHex(keys.ed25519.privateKey),
+    },
+  };
+  if (keys.mlDsa65) {
+    payload.mlDsa65 = {
+      publicKey: bytesToHex(keys.mlDsa65.publicKey),
+      secretKey: bytesToHex(keys.mlDsa65.privateKey),
+    };
+  }
+  const dir = path.dirname(KEY_FILE);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(KEY_FILE, JSON.stringify(payload, null, 2), { mode: 0o600 });
+}
+
+function loadKeysFromDisk(): DualKeyPair | null {
+  try {
+    if (!fs.existsSync(KEY_FILE)) return null;
+    const raw = JSON.parse(fs.readFileSync(KEY_FILE, 'utf-8')) as PersistedKeys;
+    const keys: DualKeyPair = {
+      ed25519: {
+        publicKey: hexToBytes(raw.ed25519.publicKey),
+        privateKey: hexToBytes(raw.ed25519.privateKey),
+      },
+    };
+    if (raw.mlDsa65 && ENABLE_PQC) {
+      keys.mlDsa65 = {
+        publicKey: hexToBytes(raw.mlDsa65.publicKey),
+        privateKey: hexToBytes(raw.mlDsa65.secretKey),
+      };
+    }
+    return keys;
+  } catch (err) {
+    console.warn('[crypto] Failed to load persisted authority keys, generating fresh ones:', (err as Error).message);
+    return null;
+  }
+}
+
 /**
  * Initialize key pairs on server startup.
+ * Loads previously generated keys from data/authority_keys.json when present
+ * (so old QRs keep verifying after restarts); otherwise generates and persists
+ * a new authority keypair for the lifetime of the deployment.
  */
 export async function initKeys(): Promise<DualKeyPair> {
   if (_keys) return _keys;
+
+  const persisted = loadKeysFromDisk();
+  if (persisted) {
+    _keys = persisted;
+    if (_keys.mlDsa65) {
+      // Re-bind the lazily imported ML-DSA module needed for signing
+      try {
+        const pq = await import('@noble/post-quantum/ml-dsa');
+        mlDsa65Module = pq.ml_dsa65;
+      } catch (err) {
+        console.warn('[crypto] ML-DSA-65 module unavailable; dual signatures disabled:', (err as Error).message);
+        _keys.mlDsa65 = undefined;
+      }
+    }
+    console.log(`[crypto] Authority keys loaded from ${KEY_FILE} (stable across restarts)`);
+    return _keys;
+  }
 
   const edPriv = ed25519.utils.randomPrivateKey();
   const edPub = ed25519.getPublicKey(edPriv);
@@ -72,7 +145,8 @@ export async function initKeys(): Promise<DualKeyPair> {
     }
   }
 
-  console.log('[crypto] Ed25519 authority keys initialized');
+  saveKeysToDisk(_keys);
+  console.log(`[crypto] Ed25519 authority keys generated and persisted to ${KEY_FILE}`);
   return _keys;
 }
 
@@ -90,12 +164,16 @@ export function getPublicKeys(): { ed25519: string; mlDsa65?: string; algorithmI
 
 /**
  * Format domain-separated canonical STH message bytes.
+ * treeSize is included so the signed tree head pins the tree shape: combined
+ * with the leaf index, every audit-path position becomes unique, which binds
+ * the QR's displayed leaf index to the signed root.
  */
-export function formatSTHMessageBytes(epoch: number, rootHash: string, timestamp: string): Uint8Array {
+export function formatSTHMessageBytes(epoch: number, rootHash: string, timestamp: string, treeSize: number): Uint8Array {
   const canon = canonicalize({
     epoch,
     root: rootHash,
     timestamp,
+    treeSize,
   });
   const full = `${DOMAIN_STH}${canon}`;
   return new TextEncoder().encode(full);
@@ -105,10 +183,10 @@ export function formatSTHMessageBytes(epoch: number, rootHash: string, timestamp
  * Sign Signed Tree Head (STH) payload.
  * Generates Ed25519 and ML-DSA-65 signatures over the exact same domain-separated bytes.
  */
-export function signSTH(epoch: number, rootHash: string, timestamp: string): STHSignatureEnvelope {
+export function signSTH(epoch: number, rootHash: string, timestamp: string, treeSize: number): STHSignatureEnvelope {
   if (!_keys) throw new Error('Authority keys not initialized');
 
-  const msgBytes = formatSTHMessageBytes(epoch, rootHash, timestamp);
+  const msgBytes = formatSTHMessageBytes(epoch, rootHash, timestamp, treeSize);
 
   const edSig = ed25519.sign(msgBytes, _keys.ed25519.privateKey);
 
@@ -132,10 +210,11 @@ export function verifySTHSignatures(
   epoch: number,
   rootHash: string,
   timestamp: string,
+  treeSize: number,
   envelope: STHSignatureEnvelope,
   trustedPubKeys: { ed25519: string; mlDsa65?: string }
 ): { valid: boolean; ed25519Valid: boolean; mlDsaValid: boolean; reason: string } {
-  const msgBytes = formatSTHMessageBytes(epoch, rootHash, timestamp);
+  const msgBytes = formatSTHMessageBytes(epoch, rootHash, timestamp, treeSize);
 
   // Anti-downgrade check: if server has PQC configured, reject downgraded ed25519-only requests
   if (trustedPubKeys.mlDsa65 && envelope.algorithmId === ALG_ED25519) {
@@ -229,6 +308,11 @@ export function hashString(str: string): string {
   return hashBytes(new TextEncoder().encode(str));
 }
 
+/**
+ * Test hook: replace in-memory authority keys (audit/adversarial use only).
+ * Also overwrites the globalThis handle used by the key-compromise simulation.
+ */
 export function _dangerouslySetKeys(keys: DualKeyPair): void {
   _keys = keys;
+  (globalThis as any).__smartbhumi_ed_priv = keys.ed25519.privateKey;
 }

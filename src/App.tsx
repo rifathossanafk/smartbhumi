@@ -1,9 +1,20 @@
 import React, { useEffect, Component, type ErrorInfo, type ReactNode } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useStore } from './store/useStore';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { JudgeDemoBar } from './components/JudgeDemoBar';
+import { BottomNav } from './components/BottomNav';
+
+/* ── Protected Route: redirects to /login if not authenticated ── */
+const ProtectedRoute: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const { currentUser } = useStore();
+  const location = useLocation();
+  if (!currentUser) {
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  }
+  return <>{children}</>;
+};
 
 // Landing & Auth
 import { LandingPage } from './pages/LandingPage';
@@ -99,12 +110,12 @@ export const App: React.FC = () => {
   return (
     <ErrorBoundary>
       <BrowserRouter>
-        <div className="min-h-screen flex flex-col bg-[#f0fdf4] text-slate-900 font-sans antialiased selection:bg-emerald-600 selection:text-white">
+        <div className="min-h-screen flex flex-col bg-[#f0fdf4] print:bg-white print:min-h-0 text-slate-900 font-sans antialiased selection:bg-emerald-600 selection:text-white">
           {/* Official Top Ribbon + Main Navigation */}
           <Navbar />
 
           {/* Main Application Routes */}
-          <main className="flex-1 w-full">
+          <main className="flex-1 w-full pb-16 lg:pb-0">
             <Routes>
               {/* 1. Official National Landing Portal */}
               <Route path="/" element={<LandingPage />} />
@@ -116,27 +127,27 @@ export const App: React.FC = () => {
               <Route path="/verify/:deedNumber" element={<VerifyPage />} />
 
               {/* P3: Deed Registration & Area Accounting Double-Sale Prevention */}
-              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/register" element={<ProtectedRoute><RegisterPage /></ProtectedRoute>} />
 
               {/* P4: e-Mutation Pipeline & AC Land Queue */}
-              <Route path="/mutation" element={<MutationPage />} />
+              <Route path="/mutation" element={<ProtectedRoute><MutationPage /></ProtectedRoute>} />
 
               {/* Auditability: RFC 9162 Merkle Log, PQC Signatures, & Red-Team Lab */}
-              <Route path="/ledger" element={<LedgerPage />} />
+              <Route path="/ledger" element={<ProtectedRoute><LedgerPage /></ProtectedRoute>} />
 
               {/* Cadastral Survey Graph, Faraiz Inheritance, & OCR Token Diff */}
-              <Route path="/lineage" element={<LineagePage />} />
+              <Route path="/lineage" element={<ProtectedRoute><LineagePage /></ProtectedRoute>} />
 
               {/* Printable A4 Deeds Kit for Judges */}
-              <Route path="/print-deeds" element={<PrintDeedsPage />} />
+              <Route path="/print-deeds" element={<ProtectedRoute><PrintDeedsPage /></ProtectedRoute>} />
 
               {/* 3. Civic Search, Cadastral Maps, & Dashboards */}
-              <Route path="/search" element={<SearchPage />} />
-              <Route path="/map" element={<MapPage />} />
-              <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="/record/:id" element={<RecordDetailsPage />} />
-              <Route path="/flagged" element={<FlaggedReviewPage />} />
-              <Route path="/history" element={<HistoryPage />} />
+              <Route path="/search" element={<ProtectedRoute><SearchPage /></ProtectedRoute>} />
+              <Route path="/map" element={<ProtectedRoute><MapPage /></ProtectedRoute>} />
+              <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+              <Route path="/record/:id" element={<ProtectedRoute><RecordDetailsPage /></ProtectedRoute>} />
+              <Route path="/flagged" element={<ProtectedRoute><FlaggedReviewPage /></ProtectedRoute>} />
+              <Route path="/history" element={<ProtectedRoute><HistoryPage /></ProtectedRoute>} />
 
               {/* Fallback to Home */}
               <Route path="*" element={<Navigate to="/" replace />} />
@@ -145,6 +156,9 @@ export const App: React.FC = () => {
 
           {/* Official Government Footer */}
           <Footer />
+
+          {/* Mobile Bottom Navigation Bar */}
+          <BottomNav />
 
           {/* Floating Judge 3-Minute Presentation Launcher & Fast DB Reset */}
           <JudgeDemoBar />

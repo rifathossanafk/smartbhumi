@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useStore } from '../store/useStore';
 import { BangladeshMapIcon } from '../components/BangladeshMapIcon';
+import { toBanglaDigits } from '../styles/tokens';
 import {
   ShieldCheck,
   QrCode,
@@ -148,10 +149,10 @@ const LAND_TYPES = [
 
 /* ─── Survey types ───────────────────────────── */
 const SURVEY_TYPES = [
-  { code: 'CS', nameEn: 'Cadastral Survey (CS)', nameBn: 'সিএস জরিপ', year: '১৮৮৮ – ১৯৪০', desc: 'Colonial cadastral baseline' },
-  { code: 'SA', nameEn: 'State Acquisition (SA)', nameBn: 'এসএ জরিপ', year: '১৯৫৬ – ১৯৬২', desc: 'Post-partition land settlement' },
-  { code: 'RS', nameEn: 'Revisional Survey (RS)', nameBn: 'আরএস জরিপ', year: '১৯৬২ – বর্তমান', desc: 'Current standard cadastral record' },
-  { code: 'BS', nameEn: 'City Survey (BS)', nameBn: 'বিএস জরিপ', year: 'শহর জরিপ', desc: 'Urban municipality records' },
+  { code: 'CS', nameEn: 'Cadastral Survey (CS)', nameBn: 'সিএস জরিপ', year: '১৮৮৮ – ১৯৪০', descEn: 'Colonial cadastral baseline and historical boundaries', descBn: 'ব্রিটিশ আমলের আদি ভূ-জরিপ ও মূল ক্যাডাস্ট্রাল সীমানা' },
+  { code: 'SA', nameEn: 'State Acquisition (SA)', nameBn: 'এসএ জরিপ', year: '১৯৫৬ – ১৯৬২', descEn: 'Post-partition land settlement and zamindari abolition', descBn: 'জমিদারি প্রথা বিলুপ্তির পর রাষ্ট্রীয় অধিগ্রহণ জরিপ' },
+  { code: 'RS', nameEn: 'Revisional Survey (RS)', nameBn: 'আরএস জরিপ', year: '১৯৬২ – বর্তমান', descEn: 'Current standard cadastral revisional land record', descBn: 'বর্তমান প্রমিত ডিজিটাল ক্যাডাস্ট্রাল সংশোধিত রেকর্ড' },
+  { code: 'BS', nameEn: 'City Survey (BS)', nameBn: 'বিএস জরিপ (সিটি)', year: '১৯৯৮ – বর্তমান', descEn: 'Modern urban municipality cadastral records', descBn: 'আধুনিক পৌরসভা ও মহানগরীর নির্ভুল নগর ভূমি জরিপ' },
 ];
 
 export const LandingPage: React.FC = () => {
@@ -170,15 +171,22 @@ export const LandingPage: React.FC = () => {
     <div className="space-y-0 pb-0">
 
       {/* ══════════════════════════════════════════════════
-          HERO SECTION — Land Map Geometry Background
+          HERO SECTION: Bangladesh Land Background
       ══════════════════════════════════════════════════ */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#071c0f] via-[#0d3b1e] to-[#14532d] text-white min-h-[92vh] flex flex-col justify-center">
-        {/* Land Map Geometry Background */}
-        <div className="absolute inset-0 land-map-bg opacity-100 pointer-events-none" />
+      <section className="relative overflow-hidden bg-[#071c0f] text-white min-h-[92vh] flex flex-col justify-center">
+        {/* Real Bangladesh Land Background Image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none transform scale-100 transition-transform duration-1000 brightness-105 contrast-105"
+          style={{ backgroundImage: `url('/hero-land.png')` }}
+        />
 
-        {/* Radial glow overlays */}
-        <div className="absolute top-1/3 left-1/4 w-[500px] h-[500px] bg-emerald-500/8 blur-[140px] rounded-full pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-green-400/6 blur-[120px] rounded-full pointer-events-none" />
+        {/* Dynamic gradient overlays: strong readability on left, high image visibility on center & right */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/25 to-black/5 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#04120a]/85 via-transparent to-black/25 pointer-events-none" />
+
+        {/* Radial glow overlays for depth and liveness */}
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-emerald-500/10 blur-[140px] rounded-full pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-lime-400/8 blur-[120px] rounded-full pointer-events-none" />
 
         {/* Subtle golden accent strip at top */}
         <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-amber-400/60 to-transparent" />
@@ -186,10 +194,10 @@ export const LandingPage: React.FC = () => {
         <div className="container mx-auto max-w-7xl px-4 relative z-10 py-24">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
-            {/* Left — Title + Description */}
+            {/* Left: Title + Description */}
             <div className="space-y-8 animate-slide-up">
               {/* Official badge */}
-              <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-emerald-900/60 border border-emerald-600/40 text-emerald-300 text-xs font-semibold backdrop-blur-md">
+              <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-black/50 border border-emerald-500/50 text-emerald-300 text-xs font-semibold backdrop-blur-md shadow-lg shadow-black/40">
                 <BangladeshMapIcon className="w-4 h-4 text-emerald-400 shrink-0" withCircle={false} />
                 <span>
                   {isBn
@@ -200,24 +208,24 @@ export const LandingPage: React.FC = () => {
 
               {/* Main headline */}
               <div className="space-y-4">
-                <h1 className="text-4xl sm:text-5xl xl:text-6xl font-extrabold tracking-tight leading-[1.3] sm:leading-[1.3] text-white">
+                <h1 className="text-4xl sm:text-5xl xl:text-6xl font-extrabold tracking-tight leading-[1.3] sm:leading-[1.3] text-white drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
                   {isBn ? (
                     <>
-                      স্মার্ট ভূমি সেবা —{' '}
+                      স্মার্ট ভূমি সেবা ও{' '}
                       <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-green-300 to-lime-300">
-                        ডিজিটাল বাংলাদেশ
+                        ডিজিটাল দলিল যাচাইকরণ
                       </span>
                     </>
                   ) : (
                     <>
-                      Smart Land Registry{' '}
+                      Smart Land Registry &{' '}
                       <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-green-300 to-lime-300">
-                        — Digital Bangladesh
+                        Digital Title Verification
                       </span>
                     </>
                   )}
                 </h1>
-                <p className="text-lg text-emerald-100/80 leading-relaxed max-w-xl">
+                <p className="text-lg text-white/90 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] leading-relaxed max-w-xl font-medium">
                   {isBn
                     ? 'খতিয়ান, দাগ, নামজারি ও দলিলের ডিজিটাল অখণ্ডতা নিশ্চিত করুন। ভূমির মালিকানায় আনুন স্বচ্ছতা, নিরাপত্তা ও দ্রুত সেবা।'
                     : 'Verify deed authenticity, inspect khatian records, explore cadastral plots, and ensure transparent land ownership across Bangladesh.'}
@@ -245,48 +253,54 @@ export const LandingPage: React.FC = () => {
               {/* Quick stats */}
               <div className="grid grid-cols-2 gap-3 pt-2">
                 <div className="bg-white/5 border border-white/10 rounded-2xl px-5 py-4 backdrop-blur-sm">
-                  <div className="text-2xl font-extrabold text-emerald-300 font-mono">{recordCount}</div>
+                  <div className="text-2xl font-extrabold text-emerald-300 font-mono">
+                    {toBanglaDigits(recordCount, isBn ? 'bn' : 'en')}
+                  </div>
                   <div className="text-xs text-emerald-100/70 mt-0.5">{isBn ? 'নিবন্ধিত দলিল' : 'Registered Deeds'}</div>
                 </div>
                 <div className="bg-white/5 border border-white/10 rounded-2xl px-5 py-4 backdrop-blur-sm">
-                  <div className="text-2xl font-extrabold text-green-300 font-mono">{verifiedCount}</div>
+                  <div className="text-2xl font-extrabold text-green-300 font-mono">
+                    {toBanglaDigits(verifiedCount, isBn ? 'bn' : 'en')}
+                  </div>
                   <div className="text-xs text-green-100/70 mt-0.5">{isBn ? 'সফল ভেরিফিকেশন' : 'Verified Records'}</div>
                 </div>
               </div>
             </div>
 
-            {/* Right — Visual Info Card */}
+            {/* Right: Visual Info Card */}
             <div className="hidden lg:block animate-float">
               <div className="relative">
-                {/* Main card */}
-                <div className="bg-[#0d3b1e]/90 border border-emerald-700/50 rounded-3xl p-6 shadow-2xl shadow-emerald-900/60 backdrop-blur-xl space-y-5">
+                {/* Main card - Glassmorphic with high transparency so background image is clearly visible */}
+                <div className="bg-black/25 border border-white/20 rounded-3xl p-6 shadow-2xl shadow-black/40 backdrop-blur-md space-y-5">
                   {/* Header */}
-                  <div className="flex items-center justify-between border-b border-emerald-800/50 pb-4">
+                  <div className="flex items-center justify-between border-b border-white/10 pb-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-xl bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 flex items-center justify-center">
+                      <div className="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 flex items-center justify-center">
                         <Landmark className="w-5 h-5" />
                       </div>
                       <div>
-                        <div className="text-sm font-bold text-white">{isBn ? 'ক্যাডাস্ট্রাল প্রিভিউ' : 'Cadastral Preview'}</div>
-                        <div className="text-[11px] text-emerald-400">RS & BS Survey Records</div>
+                        <div className="text-sm font-bold text-white drop-shadow-sm">{isBn ? 'ক্যাডাস্ট্রাল প্রিভিউ' : 'Cadastral Preview'}</div>
+                        <div className="text-[11px] text-emerald-300 drop-shadow-sm">
+                          {isBn ? 'আরএস ও বিএস ক্যাডাস্ট্রাল রেকর্ড' : 'RS & BS Survey Records'}
+                        </div>
                       </div>
                     </div>
-                    <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-900/60 border border-emerald-600/40 text-emerald-300">
-                      ● LIVE
+                    <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-950/60 border border-emerald-500/40 text-emerald-300">
+                      {isBn ? '● লাইভ' : '● LIVE'}
                     </span>
                   </div>
 
                   {/* Land Classification Visual */}
                   <div className="space-y-2.5">
-                    <div className="text-xs text-emerald-300 font-semibold">{isBn ? 'জমির শ্রেণি বিভাগ' : 'Land Classification'}</div>
+                    <div className="text-xs text-emerald-300 font-semibold drop-shadow-sm">{isBn ? 'জমির শ্রেণি বিভাগ' : 'Land Classification'}</div>
                     {LAND_TYPES.map((t) => (
                       <div key={t.code} className="flex items-center gap-3">
                         <div className={`w-2.5 h-2.5 rounded-sm ${t.color} shrink-0`} />
                         <div className="flex-1 flex items-center justify-between">
-                          <span className="text-xs text-emerald-100">{isBn ? t.nameBn : t.nameEn}</span>
-                          <span className="text-xs text-emerald-400 font-mono font-bold">{t.pct}%</span>
+                          <span className="text-xs text-emerald-100 font-medium drop-shadow-sm">{isBn ? t.nameBn : t.nameEn}</span>
+                          <span className="text-xs text-emerald-300 font-mono font-bold">{t.pct}%</span>
                         </div>
-                        <div className="w-20 h-1.5 bg-emerald-900/60 rounded-full overflow-hidden">
+                        <div className="w-20 h-1.5 bg-black/40 rounded-full overflow-hidden">
                           <div className={`h-full rounded-full ${t.color}`} style={{ width: `${t.pct}%` }} />
                         </div>
                       </div>
@@ -294,29 +308,39 @@ export const LandingPage: React.FC = () => {
                   </div>
 
                   {/* Sample records */}
-                  <div className="space-y-2 border-t border-emerald-800/50 pt-4">
-                    <div className="text-xs text-emerald-300 font-semibold">{isBn ? 'সাম্প্রতিক নিবন্ধন' : 'Recent Registrations'}</div>
+                  <div className="space-y-2 border-t border-white/10 pt-4">
+                    <div className="text-xs text-emerald-300 font-semibold drop-shadow-sm">{isBn ? 'সাম্প্রতিক নিবন্ধন' : 'Recent Registrations'}</div>
                     {[
                       { dag: 'DAG-2026-001', mouza: isBn ? 'হেমায়েতপুর, সাভার' : 'Hemayetpur, Savar', area: '১৫ শতক', status: 'active' },
                       { dag: 'DAG-2026-003', mouza: isBn ? 'কোতোয়ালি, চট্টগ্রাম' : 'Kotwali, Chittagong', area: '৮.৫ শতক', status: 'active' },
                     ].map((r) => (
-                      <div key={r.dag} className="flex items-center justify-between p-3 rounded-xl bg-emerald-900/30 border border-emerald-800/40">
+                      <div key={r.dag} className="flex items-center justify-between p-3 rounded-xl bg-black/25 border border-white/10 backdrop-blur-sm">
                         <div>
-                          <div className="text-xs font-bold text-white font-mono">{r.dag}</div>
-                          <div className="text-[10px] text-emerald-400">{r.mouza} • {r.area}</div>
+                          <div className="text-xs font-bold text-white font-mono drop-shadow-sm">{r.dag}</div>
+                          <div className="text-[10px] text-emerald-200">{r.mouza} • {r.area}</div>
                         </div>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-900 border border-emerald-600/40 text-emerald-300 animate-glow">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300">
                           {isBn ? 'সক্রিয়' : 'Active'}
                         </span>
                       </div>
                     ))}
                   </div>
 
-                  {/* Security badge */}
-                  <div className="flex items-center gap-2 p-3 rounded-xl bg-amber-900/20 border border-amber-700/30">
-                    <Lock className="w-4 h-4 text-amber-400 shrink-0" />
-                    <span className="text-xs text-amber-200/80">
-                      {isBn ? 'SHA-256 ক্রিপ্টোগ্রাফিক সুরক্ষা সক্রিয়' : 'SHA-256 Cryptographic Protection Active'}
+                  {/* Security badge: SHA-256 + PQC (Post-Quantum Cryptography) */}
+                  <div className="flex items-center justify-between gap-3 p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30 backdrop-blur-sm">
+                    <div className="flex items-center gap-2.5">
+                      <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <div>
+                        <div className="text-[11px] font-bold text-emerald-200">
+                          {isBn ? 'SHA-256 ও পোস্ট-কোয়ান্টাম ক্রিপ্টোগ্রাফি (PQC) সক্রিয়' : 'SHA-256 & Post-Quantum Cryptography (PQC) Active'}
+                        </div>
+                        <div className="text-[10px] text-emerald-300/80 font-mono">
+                          {isBn ? 'ML-DSA-65 কোয়ান্টাম-প্রতিরোধী ডিজিটাল স্বাক্ষর' : 'ML-DSA-65 Quantum-Resistant Digital Signatures'}
+                        </div>
+                      </div>
+                    </div>
+                    <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 uppercase tracking-wider shrink-0">
+                      PQC Ready
                     </span>
                   </div>
                 </div>
@@ -335,10 +359,13 @@ export const LandingPage: React.FC = () => {
             {BD_STATS.map((stat, i) => (
               <div key={i} className="bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-center backdrop-blur-sm">
                 <div className={`text-2xl font-extrabold font-mono ${stat.color}`}>
-                  {stat.value >= 1000000
-                    ? `${(stat.value / 1000000).toFixed(1)}M`
-                    : stat.value}
-                  {stat.suffix}
+                  {isBn
+                    ? (stat.value >= 1000000
+                        ? `${toBanglaDigits((stat.value / 1000000).toFixed(1), 'bn')}M${stat.suffix}`
+                        : `${toBanglaDigits(stat.value, 'bn')}${stat.suffix}`)
+                    : (stat.value >= 1000000
+                        ? `${(stat.value / 1000000).toFixed(1)}M${stat.suffix}`
+                        : `${stat.value}${stat.suffix}`)}
                 </div>
                 <div className="text-xs text-white/60 mt-1">{isBn ? stat.labelBn : stat.labelEn}</div>
               </div>
@@ -436,7 +463,9 @@ export const LandingPage: React.FC = () => {
                     <div className="text-sm font-bold text-white">{isBn ? survey.nameBn : survey.nameEn}</div>
                     <div className="text-xs text-emerald-400 font-mono mt-0.5">{survey.year}</div>
                   </div>
-                  <p className="text-xs text-emerald-200/60">{survey.desc}</p>
+                  <p className="text-xs text-emerald-200/60 leading-relaxed">
+                    {isBn ? survey.descBn : survey.descEn}
+                  </p>
                 </div>
               ))}
             </div>
@@ -517,8 +546,8 @@ export const LandingPage: React.FC = () => {
 
               <div className="text-xs text-emerald-500 text-center border-t border-emerald-800/40 pt-4">
                 {isBn
-                  ? 'তথ্যসূত্র: ভূমি মন্ত্রণালয় বাংলাদেশ — ভূমি জরিপ প্রতিবেদন ২০২৫'
-                  : 'Source: Ministry of Land Bangladesh — Land Survey Report 2025'}
+                  ? 'তথ্যসূত্র: ভূমি মন্ত্রণালয় বাংলাদেশ (জাতীয় ভূমি জরিপ প্রতিবেদন ২০২৫)'
+                  : 'Source: Ministry of Land Bangladesh (National Land Survey Report 2025)'}
               </div>
             </div>
           </div>
@@ -533,7 +562,7 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* ══════════════════════════════════════════════════
-          HOW IT WORKS — VERIFICATION PROCESS
+          HOW IT WORKS: VERIFICATION PROCESS
       ══════════════════════════════════════════════════ */}
       <section className="bg-[#f0fdf4] py-20 px-4">
         <div className="container mx-auto max-w-6xl space-y-10">
@@ -569,10 +598,10 @@ export const LandingPage: React.FC = () => {
               {
                 num: '০২',
                 icon: Lock,
-                titleEn: 'SHA-256 Hash Check',
-                titleBn: 'ক্রিপ্টোগ্রাফিক হ্যাশ যাচাই',
-                descEn: 'The system computes a SHA-256 cryptographic fingerprint and matches it against the official registry.',
-                descBn: 'ব্রাউজারে SHA-256 হ্যাশ বের করে সরকারি নিবন্ধিত মূল রেকর্ডের সাথে মিলিয়ে দেখা হয়।',
+                titleEn: 'SHA-256 & PQC Verification',
+                titleBn: 'SHA-256 ও পোস্ট-কোয়ান্টাম (PQC) যাচাই',
+                descEn: 'The system computes SHA-256 hash integrity and validates ML-DSA-65 post-quantum cryptographic signatures against the official registry.',
+                descBn: 'ব্রাউজারে SHA-256 হ্যাশ এবং সার্ভারে ML-DSA-65 পোস্ট-কোয়ান্টাম ডিজিটাল স্বাক্ষর সরকারি মূল রেকর্ডের সাথে স্বয়ংক্রিয়ভাবে মিলিয়ে দেখা হয়।',
                 color: 'bg-green-600',
               },
               {

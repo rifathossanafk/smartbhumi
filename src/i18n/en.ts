@@ -1,10 +1,10 @@
 const en = {
   translation: {
-    appName: 'Smart Bhumi | LandProof',
-    tagline: 'Smart Land Bangladesh — Verify Land Documents & Khatians with Confidence.',
+    appName: 'SmartBhumi',
+    tagline: 'Smart Land Bangladesh: Verify Land Documents & Khatians with Confidence.',
     hackathonBadge: "Government of the People's Republic of Bangladesh | Ministry of Land",
     demoDisclaimer: 'Digital Land Records & Cadastral Verification Platform',
-    demoDisclaimerLong: 'National Land Registry & Integrity Network — Cryptographic Security & NID integrated land records.',
+    demoDisclaimerLong: 'National Land Registry & Integrity Network (Cryptographic Security & NID integration)',
     notLegalDocument: 'Smart Land Bangladesh Digital Platform',
 
     nav: {
@@ -185,7 +185,7 @@ const en = {
         review: 'Review & Confirm',
       },
       uploadDoc: 'Upload Document',
-      uploadHint: 'PDF, JPG, PNG — max 10 MB',
+      uploadHint: 'PDF, JPG, PNG (max 10 MB)',
       dragDrop: 'Drag & drop a file here or click to browse',
       calculating: 'Calculating fingerprint...',
       submit: 'Register Deed',
@@ -269,7 +269,7 @@ const en = {
       title: 'Land Record Map',
       subtitle: 'View demo land record locations on the Bangladesh map',
       legend: 'Map Legend',
-      demoLocation: 'DEMO LOCATION — NOT AN ACTUAL CADASTRAL PARCEL',
+      demoLocation: 'DEMO LOCATION (SIMULATED RECORD)',
       selectRecord: 'Select a record',
       recordDetails: 'Record Details',
       filterByDivision: 'Filter by Division',

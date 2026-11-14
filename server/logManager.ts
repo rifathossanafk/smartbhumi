@@ -130,8 +130,9 @@ export function appendDeedToLog(deedId: string): {
   const rootHash = computeRootHex(allLeaves.map(l => l.leaf_hash));
   const timestamp = new Date().toISOString();
 
-  // 6. Sign STH with dual signatures (Ed25519 + ML-DSA-65)
-  const env: STHSignatureEnvelope = signSTH(epoch, rootHash, timestamp);
+  // 6. Sign STH with dual signatures (Ed25519 + ML-DSA-65); treeSize is part
+  // of the signed message so the QR's leaf index is cryptographically bound
+  const env: STHSignatureEnvelope = signSTH(epoch, rootHash, timestamp, allLeaves.length);
 
   db.prepare(`
     INSERT INTO merkle_sth (
@@ -225,6 +226,7 @@ export function generateDeedQRPayload(deedIdOrNumber: string): {
     alg: 'ed25519',
     ep: sth.epoch,
     idx: deed.leaf_index,
+    sz: sth.treeSize,
     claims: compactClaims,
     proof,
     root: sth.rootHash,

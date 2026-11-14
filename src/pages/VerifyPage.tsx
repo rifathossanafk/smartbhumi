@@ -28,7 +28,7 @@ import {
   getCachedKeys,
   isAirplaneMode,
   setAirplaneMode,
-  fetchDeedQR,
+  fetchDeedQROrCached,
   checkOCRDiff
 } from '../api/client';
 import { Button, Card, Badge, LoadingSpinner } from '../components/UIComponents';
@@ -48,6 +48,8 @@ export const VerifyPage: React.FC = () => {
   const [cachedSthState, setCachedSthState] = useState<any>(null);
   const [airplaneActive, setAirplaneActive] = useState<boolean>(isAirplaneMode());
   const [cameraError, setCameraError] = useState<string | null>(null);
+  const [qrSource, setQrSource] = useState<'live' | 'cached' | null>(null);
+  const [sampleError, setSampleError] = useState<string | null>(null);
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -166,10 +168,23 @@ export const VerifyPage: React.FC = () => {
 
     try {
       const cachedKeys = getCachedKeys();
-      const trustedPub = cachedKeys?.ed25519 || 'dbf5382e239c4b943bf471a5b2b36254f5baa8d7c03130661a46104c51257247';
+      // Fail closed: without a pinned registry key we cannot verify anything.
+      // The key is cached from /api/sth/latest during the last online sync;
+      // a first-ever offline visit cannot be trusted and must say so.
+      if (!cachedKeys?.ed25519) {
+        setVerifyResult({
+          valid: false,
+          disclaimer: 'CLAIMS DISCIPLINE: Physical execution before Sub-Registrar is required. Verification failed.',
+          reason: isBn
+            ? 'নির্ভরযোগ্য রেজিস্ট্রি কী পাওয়া যায়নি। অনুগ্রহ করে অন্তত একবার অনলাইন সিঙ্ক করুন (এয়ারপ্লেন মোড বন্ধ করে পৃষ্ঠা রিলোড করুন) — অর্জিত স্বাক্ষর যাচাই ছাড়া কোনো দলিল বৈধ বলা হবে না।'
+            : 'No trusted registry public key found on this device. Go online once (disable airplane mode and reload) to pin the authority key — verification fails closed rather than trusting an unknown key.',
+        });
+        return;
+      }
+
       const cachedSTH = getCachedSTH() || undefined;
 
-      const result = verifyQROffline(qrText, trustedPub, cachedSTH as any);
+      const result = verifyQROffline(qrText, cachedKeys.ed25519, cachedSTH as any);
       setVerifyResult(result);
     } catch (err) {
       setVerifyResult({
@@ -185,12 +200,15 @@ export const VerifyPage: React.FC = () => {
   const loadSample = async (type: 'genuine' | 'tampered' | 'khas') => {
     setScanning(true);
     setOcrDiffResult(null);
+    setSampleError(null);
     try {
       if (type === 'genuine') {
-        const qrData = await fetchDeedQR('LP-2026-001');
+        const qrData = await fetchDeedQROrCached('LP-2026-001');
+        setQrSource(qrData.fromCache ? 'cached' : 'live');
         handleVerifyRawText(qrData.qrString);
       } else if (type === 'tampered') {
-        const qrData = await fetchDeedQR('LP-2026-001');
+        const qrData = await fetchDeedQROrCached('LP-2026-001');
+        setQrSource(qrData.fromCache ? 'cached' : 'live');
         const parsed: QRPayload = decodeQRPayload(qrData.qrString);
         const tampered: QRPayload = {
           ...parsed,
@@ -206,8 +224,11 @@ export const VerifyPage: React.FC = () => {
           setOcrDiffResult(diff);
         }
       } else if (type === 'khas') {
-        const diff = await checkOCRDiff('khas').catch(() => null);
-        setOcrDiffResult(diff);
+        setQrSource(null);
+        if (!airplaneActive) {
+          const diff = await checkOCRDiff('khas').catch(() => null);
+          setOcrDiffResult(diff);
+        }
         setVerifyResult({
           valid: false,
           disclaimer: 'CLAIMS DISCIPLINE: Khas land is non-transferable state property.',
@@ -215,6 +236,12 @@ export const VerifyPage: React.FC = () => {
         });
       }
     } catch (err) {
+      const offlineNoCache = airplaneActive || (err as Error).message?.includes('AIRPLANE');
+      setSampleError(offlineNoCache
+        ? (isBn
+          ? 'এয়ারপ্লেন মোডে নেটওয়ার্ক বন্ধ এবং কোনো ক্যাশ করা QR পাওয়া যায়নি। অনুগ্রহ করে এয়ারপ্লেন মোড বন্ধ করে একবার "নমুনা ১" চালু অবস্থায় লোড করুন, তারপর আবার চেষ্টা করুন।'
+          : 'Airplane mode is blocking the network and no cached QR exists yet. Load a sample once while online, then retry.')
+        : ((err as Error).message || 'Failed to load sample.'));
       console.error(err);
     } finally {
       setScanning(false);
@@ -271,6 +298,39 @@ export const VerifyPage: React.FC = () => {
           </div>
         </button>
       </div>
+
+      {/* Trust anchor & QR source status */}
+      <div className="flex flex-wrap items-center gap-2 text-[11px]">
+        <span
+          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border font-medium ${
+            getCachedKeys()?.ed25519
+              ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+              : 'bg-amber-50 text-amber-800 border-amber-300'
+          }`}
+        >
+          <ShieldCheck className="w-3.5 h-3.5" />
+          {getCachedKeys()?.ed25519
+            ? isBn
+              ? 'রেজিস্ট্রি কী এই ডিভাইসে পিন করা (অফলাইন যাচাই সক্ষম)'
+              : 'Registry authority key pinned on this device (offline verification armed)'
+            : isBn
+              ? 'রেজিস্ট্রি কী এখনো পিন করা হয়নি — যাচাই ব্যর্থ-বন্ধ (fail-closed)'
+              : 'Registry key not pinned yet — verification will fail closed'}
+        </span>
+        {qrSource === 'cached' && (
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border bg-slate-50 text-slate-600 border-slate-200">
+            <Clock className="w-3.5 h-3.5" />
+            {isBn ? 'QR ক্যাশ থেকে (অফলাইন)' : 'QR loaded from offline cache'}
+          </span>
+        )}
+      </div>
+
+      {sampleError && (
+        <div className="flex items-start gap-2 p-3 rounded-xl border border-amber-300 bg-amber-50 text-xs text-amber-900">
+          <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+          <span>{sampleError}</span>
+        </div>
+      )}
 
       {/* Verification Input Tabs: Camera / Upload / Samples */}
       <div className="flex border-b border-slate-200 gap-1 text-sm font-semibold select-none">

@@ -12,7 +12,7 @@ export const BangladeshMapIcon: React.FC<Props> = ({
 }) => {
   return (
     <img
-      src="/logo.png"
+      src="/logo.svg"
       alt="LandProof Bangladesh Logo"
       className={`${className} object-contain`}
       style={size ? { width: size, height: size } : undefined}

@@ -235,7 +235,7 @@ export const HistoryPage: React.FC = () => {
                       <RoleBadge role={evt.role} showIcon={false} />
                     </td>
                     <td className="py-3 px-4 text-slate-600 max-w-xs truncate" title={evt.details}>
-                      {evt.details || '—'}
+                      {evt.details || 'অনির্দিষ্ট'}
                     </td>
                   </tr>
                 ))}
@@ -247,8 +247,8 @@ export const HistoryPage: React.FC = () => {
 
       <div className="text-[11px] text-slate-400 text-center">
         {isBn
-          ? 'জাতীয় ভূমি রেজিস্ট্রি অডিট লেজার — প্রতিটি ভেরিফিকেশন ও প্রশাসনিক পদক্ষেপ ক্রিপ্টোগ্রাফিকভাবে সংরক্ষিত।'
-          : 'National Land Registry Audit Ledger — All verifications and official administrative actions are cryptographically logged.'}
+          ? 'জাতীয় ভূমি রেজিস্ট্রি অডিট লেজার | প্রতিটি ভেরিফিকেশন ও প্রশাসনিক পদক্ষেপ ক্রিপ্টোগ্রাফিকভাবে সংরক্ষিত।'
+          : 'National Land Registry Audit Ledger | All verifications and official administrative actions are cryptographically logged.'}
       </div>
     </div>
   );

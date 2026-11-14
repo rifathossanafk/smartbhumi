@@ -665,7 +665,7 @@ export const DashboardPage: React.FC = () => {
                         {rec.isFrozen ? (
                           <span className="text-red-700 font-medium">{rec.freezeReason}</span>
                         ) : (
-                          <span className="text-slate-400">—</span>
+                          <span className="text-slate-400">প্রযোজ্য নয়</span>
                         )}
                       </td>
                       <td className="py-3 px-3 text-right">

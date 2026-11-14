@@ -126,24 +126,11 @@ app.get('/api/state', (c) => {
 
 app.post('/api/db/reset', (c) => {
   const durationMs = resetDatabaseFast();
-  // Reseed initial deed into Merkle log
-  const deedId = 'rec-001';
-  db.prepare(`
-    INSERT INTO deeds (
-      id, deed_number, deed_type, status,
-      seller_name_en, seller_name_bn, seller_nid_masked,
-      buyer_name_en, buyer_name_bn, buyer_nid_masked,
-      plot_share_id, dag_number, mouza_code, khatian_number,
-      transfer_area, upazila, district, division, registration_date, registered_by, is_synthetic
-    ) VALUES (?, ?, 'sale', 'registered', ?, ?, ?, ?, ?, ?, 'ps-001', 'DAG-2026-001', 'MOUZA-DEMO-001', 'KH-2026-0001', ?, 'Savar', 'Dhaka', 'Dhaka', '2026-01-15', 'officer-tanveer-02', 1)
-  `).run(
-    deedId,
-    'LP-2026-001',
-    'SYNTHETIC: Mohammad Abdul Karim', 'মোহাম্মদ আব্দুল করিম', '999000*****1001',
-    'SYNTHETIC: Tanveer Ahmed', 'তানভীর আহমেদ', '999000*****1002',
-    toMicroShotok(15.0, 'shotok')
-  );
-  appendDeedToLog(deedId);
+
+  // resetDatabaseFast() already reseeds deed rec-001 (LP-2026-001) via
+  // seedDatabase() and appends it to the Merkle log via the registered log
+  // appender — re-inserting here would violate the UNIQUE constraint on
+  // deeds.id and return a 500.
 
   return c.json({
     success: true,

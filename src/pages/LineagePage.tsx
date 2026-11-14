@@ -322,8 +322,8 @@ export const LineagePage: React.FC = () => {
                       <tr key={c.id} className="hover:bg-slate-50">
                         <td className="p-2.5 font-bold font-mono text-emerald-800">{c.surveyType}</td>
                         <td className="p-2.5 font-mono">{c.khatianNumber}</td>
-                        <td className="p-2.5">{c.ownerName || '—'}</td>
-                        <td className="p-2.5">{toBanglaDigits(c.areaShotok ?? '—', i18n.language)} শতক</td>
+                        <td className="p-2.5">{c.ownerName || 'অনুল্লিখিত'}</td>
+                        <td className="p-2.5">{toBanglaDigits(c.areaShotok ?? '০', i18n.language)} শতক</td>
                         <td className="p-2.5">
                           {c.isBroken ? (
                             <Badge variant="danger">ভাঙা লিংক</Badge>
